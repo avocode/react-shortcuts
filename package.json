@@ -1,0 +1,43 @@
+{
+  "name": "react-shortcuts",
+  "description": "React shortcuts",
+  "version": "0.1.0",
+  "license": "MIT",
+  "main": "./lib/",
+  "maintainers": [
+    {
+      "name": "Petr Brzek",
+      "email": "petr@avocode.com"
+    }
+  ],
+  "scripts": {
+    "build": "webpack --progress --colors",
+    "start": "webpack-dev-server --hot --progress --colors",
+    "test": "./node_modules/.bin/mocha && ./node_modules/.bin/istanbul report text-summary lcov"
+  },
+  "dependencies": {
+    "classnames": "^2.1.3",
+    "events": "^1.0.2",
+    "invariant": "^2.1.0",
+    "lodash": "^3.10.1",
+    "mousetrap": "^1.5.3",
+    "platform": "^1.3.0",
+    "react": "^0.13.3"
+  },
+  "devDependencies": {
+    "coffee-coverage": "^0.6.3",
+    "coffee-lint-loader": "0.0.1",
+    "coffee-loader": "^0.7.2",
+    "coffee-script": "^1.9.3",
+    "css-loader": "^0.15.6",
+    "expect": "^1.9.0",
+    "istanbul": "^0.3.18",
+    "jsdom": "^3.1.0",
+    "less": "^2.5.1",
+    "less-loader": "^2.2.0",
+    "mocha": "^2.2.5",
+    "style-loader": "^0.12.3",
+    "webpack": "^1.11.0",
+    "webpack-dev-server": "^1.10.1"
+  }
+}
