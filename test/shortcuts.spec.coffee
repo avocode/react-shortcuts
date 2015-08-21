@@ -11,11 +11,10 @@ describe 'Shortcuts component: ', ->
   spy = expect.createSpy()
   spyFn = (spy) -> spy()
 
-  before ->
+  beforeEach ->
     Shortcuts = React.createFactory(require '../lib/component')
-    props =
-      name: 'Test'
-      handler: ->
+    props.name = 'Test'
+    props.handler = ->
 
     Test = React.createClass
       displayName: 'Test'
@@ -35,7 +34,7 @@ describe 'Shortcuts component: ', ->
         props.name = @constructor.displayName
         props.ref = 'shortcut'
 
-        React.DOM.div null,
+        React.DOM.div className: 'root',
           Shortcuts props,
             React.DOM.span className: 'child'
 
@@ -102,3 +101,10 @@ describe 'Shortcuts component: ', ->
       obj = preventDefault: ->
       el = element.refs.shortcut._handleShortcuts(obj, 'left')
       expect(spy).toHaveBeenCalled()
+
+    it 'should add tabIndex attr on trigger DOM node', ->
+      props.trigger = '.root'
+      props.tabIndex = 123
+      element = React.render(React.createElement(Test), document.body)
+
+      expect(element.getDOMNode().getAttribute('tabindex')).toBe('123')

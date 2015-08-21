@@ -1,5 +1,6 @@
 React = require 'react'
 _ = require 'lodash'
+invariant = require 'invariant'
 mousetrap = require 'mousetrap'
 
 shortcuts = React.createFactory 'shortcuts'
@@ -19,17 +20,31 @@ module.exports = React.createClass
     className: React.PropTypes.string
     eventType: React.PropTypes.string
     stopPropagation: React.PropTypes.bool
+    trigger: React.PropTypes.string
 
   getDefaultProps: ->
+    element: null
+    tabIndex: null
+    className: null
     eventType: null
     stopPropagation: null
+    trigger: null
 
   _bindShortcuts: (shortcutsArr) ->
-    element = React.findDOMNode(@refs.shortcuts)
+    if @props.trigger
+      element = document.querySelector(@props.trigger)
+      invariant(element, 'Trigger DOM node was not found.')
+      element.setAttribute('tabindex', @props.tabIndex or -1)
+    else
+      element = React.findDOMNode(@refs.shortcuts)
     mousetrap(element).bind(shortcutsArr, @_handleShortcuts, @props.eventType)
 
   _unbindShortcuts: (shortcutsArr) ->
-    element = React.findDOMNode(@refs.shortcuts)
+    if @props.trigger
+      element = document.querySelector(@props.trigger)
+      element.removeAttribute('tabindex')
+    else
+      element = React.findDOMNode(@refs.shortcuts)
     mousetrap(element).unbind(shortcutsArr)
 
   _onUpdate: ->
@@ -40,12 +55,12 @@ module.exports = React.createClass
   componentDidMount: ->
     shortcutsArr = @context.shortcuts.getShortcuts(@props.name)
     @_bindShortcuts(shortcutsArr)
-
     @context.shortcuts.addUpdateListener(@_onUpdate)
 
   componentWillUnmount: ->
+    shortcutsArr = @context.shortcuts.getShortcuts(@props.name)
+    @_unbindShortcuts(shortcutsArr)
     @context.shortcuts.removeUpdateListener(@_onUpdate)
-    @_unbindShortcuts()
 
   _handleShortcuts: (e, keyName) ->
     e.preventDefault()

@@ -33,9 +33,6 @@
   "no_unnecessary_fat_arrows": {
     "level": "warn"
   },
-  "max_line_length": {
-    "level": "warn"
-  },
   "space_operators": {
     "level": "error"
   },

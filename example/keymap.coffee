@@ -7,3 +7,4 @@ module.exports =
       osx: 'command+backspace'
       windows: 'delete'
       linux: 'delete'
+    UNMOUNT: 'esc'

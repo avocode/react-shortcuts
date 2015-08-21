@@ -11,7 +11,8 @@ class ShortcutManager extends EventEmitter
     @_keymap = keymap
 
   addUpdateListener: (callback) ->
-    invariant(callback, 'addUpdateListener: callback argument is not defined or falsy')
+    invariant callback,
+      'addUpdateListener: callback argument is not defined or falsy'
     @on(ShortcutManager.CHANGE_EVENT, callback)
 
   removeUpdateListener: (callback) ->
@@ -26,11 +27,13 @@ class ShortcutManager extends EventEmitter
       return item
 
   addKeymap: (keymap) ->
-    invariant(keymap, 'addKeymap: keymap argument is not defined or falsy.')
+    invariant keymap,
+      'addKeymap: keymap argument is not defined or falsy.'
     @_keymap = keymap
 
   setKeymap: (keymap) ->
-    invariant(keymap, 'setKeymap: keymap argument is not defined or falsy.')
+    invariant keymap,
+      'setKeymap: keymap argument is not defined or falsy.'
     @_keymap = keymap
     @emit(ShortcutManager.CHANGE_EVENT)
 
@@ -38,10 +41,12 @@ class ShortcutManager extends EventEmitter
     return @_keymap
 
   getShortcuts: (componentName) ->
-    invariant(componentName, 'getShortcuts: name argument is not defined or falsy.')
+    invariant componentName,
+      'getShortcuts: name argument is not defined or falsy.'
 
     cursor = @_keymap[componentName]
-    invariant(cursor, "getShortcuts: There are no shortcuts with name #{componentName}.")
+    invariant cursor,
+      "getShortcuts: There are no shortcuts with name #{componentName}."
 
     _parseShortcutDescriptor = @_parseShortcutDescriptor.bind(this)
     shortcuts = _(cursor).map(_parseShortcutDescriptor).flatten().value()
@@ -49,8 +54,10 @@ class ShortcutManager extends EventEmitter
     return shortcuts
 
   findShortcutName: (keyName, componentName) ->
-    invariant(keyName, 'findShortcutName: keyName argument is not defined or falsy.')
-    invariant(componentName, 'findShortcutName: componentName argument is not defined or falsy.')
+    invariant keyName,
+      'findShortcutName: keyName argument is not defined or falsy.'
+    invariant componentName,
+      'findShortcutName: componentName argument is not defined or falsy.'
 
     cursor = @_keymap[componentName]
     result = _.findKey cursor, (item) =>
