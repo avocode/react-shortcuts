@@ -3,7 +3,7 @@
   "description": "React shortcuts",
   "version": "0.3.0",
   "license": "MIT",
-  "main": "./dist/",
+  "main": "./",
   "maintainers": [
     {
       "name": "Petr Brzek",
@@ -19,7 +19,7 @@
   ],
   "scripts": {
     "build": "webpack --progress --colors",
-    "prepublish": "./node_modules/.bin/coffee -o dist/ lib/",
+    "prepublish": "./node_modules/.bin/coffee -o ./ lib/",
     "start": "webpack-dev-server --hot --progress --colors",
     "test": "./node_modules/.bin/mocha && ./node_modules/.bin/istanbul report text-summary lcov"
   },
