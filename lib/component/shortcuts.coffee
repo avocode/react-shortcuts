@@ -39,7 +39,7 @@ module.exports = React.createClass
     @_bindShortcuts(shortcutsArr)
 
     @context.shortcuts.onUpdate =>
-      shortcuts = @context.shortcuts.getShortcuts(@props.name)
+      shortcutsArr = @context.shortcuts.getShortcuts(@props.name)
       @_unbindShortcuts(shortcutsArr)
       @_bindShortcuts(shortcutsArr)
 
