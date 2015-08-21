@@ -3,7 +3,7 @@
   "description": "React shortcuts",
   "version": "0.2.1",
   "license": "MIT",
-  "main": "./lib/",
+  "main": "./dist/",
   "maintainers": [
     {
       "name": "Petr Brzek",
