@@ -1,7 +1,7 @@
 keymap = require './keymap'
-ShortcutsManager = require '../lib'
+ShortcutManager = require '../lib'
 
-shortcutsManager = new ShortcutsManager(keymap)
+shortcutsManager = new ShortcutManager(keymap)
 Shortcuts = null
 Test = null
 props = {}

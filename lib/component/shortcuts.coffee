@@ -20,37 +20,37 @@ module.exports = React.createClass
     eventType: React.PropTypes.string
     stopPropagation: React.PropTypes.bool
 
-  _element: null
-
   getDefaultProps: ->
     eventType: null
     stopPropagation: null
 
   _bindShortcuts: (shortcutsArr) ->
-    mousetrap(@_element).bind(shortcutsArr, @_handleShortcuts, @props.eventType)
+    element = React.findDOMNode(@refs.shortcuts)
+    mousetrap(element).bind(shortcutsArr, @_handleShortcuts, @props.eventType)
 
   _unbindShortcuts: (shortcutsArr) ->
-    mousetrap(@_element).unbind(shortcutsArr)
+    element = React.findDOMNode(@refs.shortcuts)
+    mousetrap(element).unbind(shortcutsArr)
+
+  _onUpdate: ->
+    shortcutsArr = @context.shortcuts.getShortcuts(@props.name)
+    @_unbindShortcuts(shortcutsArr)
+    @_bindShortcuts(shortcutsArr)
 
   componentDidMount: ->
-    @_element = React.findDOMNode(@refs.shortcuts)
-
     shortcutsArr = @context.shortcuts.getShortcuts(@props.name)
     @_bindShortcuts(shortcutsArr)
 
-    @context.shortcuts.onUpdate =>
-      shortcutsArr = @context.shortcuts.getShortcuts(@props.name)
-      @_unbindShortcuts(shortcutsArr)
-      @_bindShortcuts(shortcutsArr)
+    @context.shortcuts.addUpdateListener(@_onUpdate)
 
   componentWillUnmount: ->
-    @context.shortcuts.dispose()
+    @context.shortcuts.removeUpdateListener(@_onUpdate)
     @_unbindShortcuts()
 
   _handleShortcuts: (e, keyName) ->
     e.preventDefault()
     e.stopPropagation() if @props.stopPropagation
-    shortcutName = @context.shortcuts.findShortcutName(keyName)
+    shortcutName = @context.shortcuts.findShortcutName(keyName, @props.name)
     @props.handler(shortcutName)
 
   render: ->
