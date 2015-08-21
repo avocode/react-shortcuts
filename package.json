@@ -10,6 +10,13 @@
       "email": "petr@avocode.com"
     }
   ],
+  "keywords": [
+    "react",
+    "react-component",
+    "keyboard",
+    "shortcuts",
+    "mousetrap"
+  ],
   "scripts": {
     "build": "webpack --progress --colors",
     "prepublish": "./node_modules/.bin/coffee -o dist/ lib/",
@@ -24,6 +31,14 @@
     "mousetrap": "^1.5.3",
     "platform": "^1.3.0",
     "react": "^0.13.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/avocode/react-shortcuts.git",
+    "web": "http://github.com/avocode/react-shortcuts"
+  },
+  "bugs": {
+    "url": "http://github.com/avocode/react-shortcuts/issues"
   },
   "devDependencies": {
     "coffee-coverage": "^0.6.3",
