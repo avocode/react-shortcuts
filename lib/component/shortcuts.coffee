@@ -18,28 +18,30 @@ module.exports = React.createClass
     tabIndex: React.PropTypes.number
     className: React.PropTypes.string
     eventType: React.PropTypes.string
+    stopPropagation: React.PropTypes.bool
 
   _element: null
 
   getDefaultProps: ->
     eventType: null
+    stopPropagation: null
 
-  _bindShortcuts: (shortcuts) ->
-    mousetrap(@_element).bind(shortcuts, @_handleShortcuts, @props.eventType)
+  _bindShortcuts: (shortcutsArr) ->
+    mousetrap(@_element).bind(shortcutsArr, @_handleShortcuts, @props.eventType)
 
-  _unbindShortcuts: (shortcuts) ->
-    mousetrap(@_element).unbind(shortcuts)
+  _unbindShortcuts: (shortcutsArr) ->
+    mousetrap(@_element).unbind(shortcutsArr)
 
   componentDidMount: ->
     @_element = React.findDOMNode(@refs.shortcuts)
 
-    shortcuts = @context.shortcuts.getShortcuts(@props.name)
-    @_bindShortcuts(shortcuts)
+    shortcutsArr = @context.shortcuts.getShortcuts(@props.name)
+    @_bindShortcuts(shortcutsArr)
 
     @context.shortcuts.onUpdate =>
       shortcuts = @context.shortcuts.getShortcuts(@props.name)
-      @_unbindShortcuts(shortcuts)
-      @_bindShortcuts(shortcuts)
+      @_unbindShortcuts(shortcutsArr)
+      @_bindShortcuts(shortcutsArr)
 
   componentWillUnmount: ->
     @context.shortcuts.dispose()
@@ -47,6 +49,7 @@ module.exports = React.createClass
 
   _handleShortcuts: (e, keyName) ->
     e.preventDefault()
+    e.stopPropagation() if @props.stopPropagation
     shortcutName = @context.shortcuts.findShortcutName(keyName)
     @props.handler(shortcutName)
 
