@@ -2,10 +2,6 @@ keymap = require './keymap'
 ShortcutManager = require '../lib'
 
 describe 'Shortcut manager: ', ->
-  manager = null
-
-  beforeEach ->
-    manager = null
 
   it 'should return empty object when calling empty constructor', ->
     manager = new ShortcutManager()
@@ -15,7 +11,7 @@ describe 'Shortcut manager: ', ->
     manager = new ShortcutManager(keymap)
     expect(manager._keymap).toExist(not _.isEmpty(manager._keymap))
 
-  it 'CHANGE_EVENT: should have static CHANGE_EVENT method', ->
+  it 'should expose the change event type as a static constant', ->
     expect(ShortcutManager.CHANGE_EVENT).toExist()
 
   it 'CHANGE_EVENT: should have static CHANGE_EVENT with defined value', ->
@@ -33,7 +29,7 @@ describe 'Shortcut manager: ', ->
     error = /Error: Invariant Violation: setKeymap: keymap argument is not defined or falsy./
     expect(manager.setKeymap).toThrow(error)
 
-  it 'add: should throw an error when add called without arg', ->
+  it 'add: should throw an error when `add` is called with no arguments', ->
     manager = new ShortcutManager(keymap)
     error = /Error: Invariant Violation: addKeymap: keymap argument is not defined or falsy/
     expect(manager.addKeymap).toThrow(error)
@@ -50,7 +46,7 @@ describe 'Shortcut manager: ', ->
   it 'getShortcuts: should return array of shortcuts', ->
     manager = new ShortcutManager(keymap)
     arr = manager.getShortcuts('Test')
-    expect(_.isArray(arr)).toExist()
+    expect(_.isArray(arr)).toBe(true)
 
     expect(arr.length).toBe(5)
 
