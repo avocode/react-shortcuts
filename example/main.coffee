@@ -1,10 +1,10 @@
 require './main.less'
 keymap = require './keymap'
 App = require './app'
-ShortcutsManager = require '../lib'
+ShortcutManager = require '../lib'
 
-shortcutsManager = new ShortcutsManager(keymap)
+shortcutManager = new ShortcutManager(keymap)
 
-window.shortcutsManager = shortcutsManager
+window.shortcutManager = shortcutManager
 
-React.render(React.createElement(App, shortcuts: shortcutsManager), document.getElementById('app'))
+React.render(React.createElement(App, shortcuts: shortcutManager), document.getElementById('app'))
