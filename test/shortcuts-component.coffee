@@ -29,6 +29,7 @@ describe 'Shortcuts component: ', ->
       render: ->
         props.handler = @_handleShortcuts
         props.name = @constructor.displayName
+        props.ref = 'shortcut'
 
         React.DOM.div null,
           Shortcuts props,
@@ -92,3 +93,7 @@ describe 'Shortcuts component: ', ->
     it 'should have children', ->
       el = element.getDOMNode().querySelector('.child')
       expect(el).toExist()
+
+    it 'should have children', ->
+      el = element.refs.shortcut
+      console.log el

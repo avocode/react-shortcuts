@@ -4,7 +4,6 @@ Thumbs.db
 
 # built sources
 dist/
-lib/
 
 # npm stuff
 node_modules/
