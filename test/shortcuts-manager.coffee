@@ -76,10 +76,3 @@ describe 'Shortcuts manager: ', ->
       manager.findShortcutName('left')
     expect(manager.findShortcutName).toThrow(/Error: Invariant Violation: findShortcutName: name argument is not defined or falsy./)
     expect(fn).toThrow(/Error: Invariant Violation: findShortcutName: you must call/)
-
-  it 'getShortcutNames: should return obj', ->
-    manager = new ShortcutsManager(keymap)
-    manager.getShortcuts('Test')
-
-    expect(_.isEmpty(manager.getShortcutNames())).toBe(false)
-    expect(manager.getShortcutNames().MOVE_LEFT).toBe('MOVE_LEFT')

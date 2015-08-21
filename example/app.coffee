@@ -14,13 +14,11 @@ module.exports = React.createClass
     shortcuts: @props.shortcuts
 
   _handleShortcuts: (command) ->
-    constants = @props.shortcuts.getShortcutNames()
-
     switch command
-      when constants.MOVE_LEFT then @setState(who: 'Hemingway - left')
-      when constants.DELETE then @setState(who: 'Hemingway - delete')
-      when constants.MOVE_RIGHT then @setState(who: 'Hemingway - right')
-      when constants.MOVE_UP then @setState(who: 'Hemingway - top')
+      when 'MOVE_LEFT' then @setState(who: 'Hemingway - left')
+      when 'DELETE' then @setState(who: 'Hemingway - delete')
+      when 'MOVE_RIGHT' then @setState(who: 'Hemingway - right')
+      when 'MOVE_UP' then @setState(who: 'Hemingway - top')
 
   _handleShortcuts2: (command) ->
     switch command

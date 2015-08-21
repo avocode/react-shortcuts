@@ -32,11 +32,6 @@ class ShortcutsManager extends EventEmitter
   getAllShortcuts: ->
     @_keymap
 
-  getShortcutNames: ->
-    obj = {}
-    _.forEach @_cursor, (item, key) -> obj[key] = key
-    obj
-
   getShortcuts: (name) ->
     invariant(name, 'getShortcuts: name argument is not defined or falsy.')
 
