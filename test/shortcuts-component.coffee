@@ -5,6 +5,8 @@ shortcutsManager = new ShortcutsManager(keymap)
 Shortcuts = null
 Test = null
 props = {}
+spy = expect.createSpy()
+spyFn = (spy) -> spy()
 
 
 describe 'Shortcuts component: ', ->
@@ -24,7 +26,9 @@ describe 'Shortcuts component: ', ->
       getChildContext: ->
         shortcuts: shortcutsManager
 
-      _handleShortcuts: ->
+      _handleShortcuts: (command) ->
+        switch command
+          when 'MOVE_LEFT' then spyFn(spy)
 
       render: ->
         props.handler = @_handleShortcuts
@@ -94,6 +98,7 @@ describe 'Shortcuts component: ', ->
       el = element.getDOMNode().querySelector('.child')
       expect(el).toExist()
 
-    it 'should have children', ->
-      el = element.refs.shortcut
-      console.log el
+    it 'should fire shortcuts handler', ->
+      obj = preventDefault: ->
+      el = element.refs.shortcut._handleShortcuts(obj, 'left')
+      expect(spy).toHaveBeenCalled()
