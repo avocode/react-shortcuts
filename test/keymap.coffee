@@ -6,7 +6,7 @@ module.exports =
     DELETE:
       osx: 'alt+backspace'
       windows: 'delete'
-      linux: 'delete'
+      linux: 'alt+backspace'
   Next:
     OPEN: 'alt+o'
     ABORT: ['d', 'c']
