@@ -26,11 +26,6 @@ class ShortcutManager extends EventEmitter
     else
       return item
 
-  addKeymap: (keymap) ->
-    invariant keymap,
-      'addKeymap: keymap argument is not defined or falsy.'
-    @_keymap = keymap
-
   setKeymap: (keymap) ->
     invariant keymap,
       'setKeymap: keymap argument is not defined or falsy.'

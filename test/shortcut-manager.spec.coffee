@@ -31,12 +31,12 @@ describe 'Shortcut manager: ', ->
 
   it 'add: should throw an error when `add` is called with no arguments', ->
     manager = new ShortcutManager(keymap)
-    error = /Error: Invariant Violation: addKeymap: keymap argument is not defined or falsy/
-    expect(manager.addKeymap).toThrow(error)
+    error = /Error: Invariant Violation: setKeymap: keymap argument is not defined or falsy/
+    expect(manager.setKeymap).toThrow(error)
 
   it 'add: should return _keymap obj that is not empty', ->
     manager = new ShortcutManager()
-    manager.addKeymap(keymap)
+    manager.setKeymap(keymap)
     expect(manager._keymap).toExist(not _.isEmpty(manager._keymap))
 
   it 'getAllShortcuts: should return _keymap that is not empty', ->
@@ -65,7 +65,7 @@ describe 'Shortcut manager: ', ->
 
   it 'findShortcutName: should return correct key label', ->
     manager = new ShortcutManager()
-    manager.addKeymap(keymap)
+    manager.setKeymap(keymap)
 
     # Test
     expect(manager.findShortcutName('command+backspace', 'Test')).toBe('DELETE')
