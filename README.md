@@ -3,6 +3,8 @@ React Shortcuts
 
 **Manage keyboard shortcuts from one place.**
 
+[![Build Status](https://travis-ci.org/avocode/react-shortcuts.svg)](https://travis-ci.org/avocode/react-shortcuts)
+
 
 Intro
 ------
