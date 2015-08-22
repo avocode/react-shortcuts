@@ -68,7 +68,7 @@ describe 'Shortcut manager: ', ->
     manager.setKeymap(keymap)
 
     # Test
-    expect(manager.findShortcutName('command+backspace', 'Test')).toBe('DELETE')
+    expect(manager.findShortcutName('alt+backspace', 'Test')).toBe('DELETE')
     expect(manager.findShortcutName('w', 'Test')).toBe('MOVE_UP')
     expect(manager.findShortcutName('up', 'Test')).toBe('MOVE_UP')
     expect(manager.findShortcutName('left', 'Test')).toBe('MOVE_LEFT')
