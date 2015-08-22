@@ -29,6 +29,8 @@ With `react-shortcuts` you can declaratively manage shortcuts for each React com
 - `ShortcutManager` which handles `keymap`
 - `<Shortcut>` component for handling shortcuts
 
+**DEMO:** http://avocode.github.io/react-shortcuts/
+
 Quick tour
 ----------
 
