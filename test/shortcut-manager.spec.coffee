@@ -47,7 +47,14 @@ describe 'Shortcut manager: ', ->
     manager = new ShortcutManager(keymap)
     arr = manager.getShortcuts('Test')
     expect(_.isArray(arr)).toBe(true)
+    shouldContainStrings = _.every(arr, _.isString)
+    expect(shouldContainStrings).toBe(true)
+    expect(arr.length).toBe(5)
 
+    arr = manager.getShortcuts('Next')
+    expect(_.isArray(arr)).toBe(true)
+    shouldContainStrings = _.every(arr, _.isString)
+    expect(shouldContainStrings).toBe(true)
     expect(arr.length).toBe(5)
 
   it 'getShortcuts: should throw an error', ->
@@ -60,10 +67,20 @@ describe 'Shortcut manager: ', ->
     manager = new ShortcutManager()
     manager.addKeymap(keymap)
 
+    # Test
     expect(manager.findShortcutName('command+backspace', 'Test')).toBe('DELETE')
     expect(manager.findShortcutName('w', 'Test')).toBe('MOVE_UP')
+    expect(manager.findShortcutName('up', 'Test')).toBe('MOVE_UP')
     expect(manager.findShortcutName('left', 'Test')).toBe('MOVE_LEFT')
     expect(manager.findShortcutName('right', 'Test')).toBe('MOVE_RIGHT')
+
+    # Next
+    expect(manager.findShortcutName('alt+o', 'Next')).toBe('OPEN')
+    expect(manager.findShortcutName('d', 'Next')).toBe('ABORT')
+    expect(manager.findShortcutName('c', 'Next')).toBe('ABORT')
+    expect(manager.findShortcutName('esc', 'Next')).toBe('CLOSE')
+    expect(manager.findShortcutName('enter', 'Next')).toBe('CLOSE')
+
 
   it 'findShortcutName: should throw an error', ->
     manager = new ShortcutManager()

@@ -4,7 +4,7 @@ module.exports =
     MOVE_RIGHT: 'right'
     MOVE_UP: ['up', 'w']
     DELETE:
-      osx: 'command+backspace'
+      osx: ['command+backspace', 'k']
       windows: 'delete'
       linux: 'delete'
     UNMOUNT: 'esc'

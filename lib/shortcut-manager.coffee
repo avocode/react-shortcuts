@@ -53,6 +53,17 @@ class ShortcutManager extends EventEmitter
 
     return shortcuts
 
+  _parseShortcutKeyName: (obj, keyName) ->
+    result = _.findKey obj, (item) =>
+      if _.isPlainObject(item)
+        item = _.get(item, @_platformName)
+      if _.isArray(item)
+        index = item.indexOf(keyName)
+        item = item[index] if index >= 0
+      return item is keyName
+
+    return result
+
   findShortcutName: (keyName, componentName) ->
     invariant keyName,
       'findShortcutName: keyName argument is not defined or falsy.'
@@ -60,14 +71,7 @@ class ShortcutManager extends EventEmitter
       'findShortcutName: componentName argument is not defined or falsy.'
 
     cursor = @_keymap[componentName]
-    result = _.findKey cursor, (item) =>
-      if _.isArray(item)
-        index = item.indexOf(keyName)
-        item[index] is keyName if index >= 0
-      else if _.isPlainObject(item)
-        _.get(item, @_platformName) is keyName
-      else
-        item is keyName
+    result = @_parseShortcutKeyName(cursor, keyName)
 
     return result
 
