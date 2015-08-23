@@ -37,7 +37,7 @@ Quick tour
 ----------
 
 
-#### 1. `npm install react-shourtcuts`
+#### 1. `npm install react-shortcuts`
 
 
 #### 2. **Define application shortcuts**
