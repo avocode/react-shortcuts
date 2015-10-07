@@ -21,6 +21,7 @@ module.exports = React.createClass
     eventType: React.PropTypes.string
     stopPropagation: React.PropTypes.bool
     trigger: React.PropTypes.string
+    nativeKeyBindingsClassName: React.PropTypes.string
 
   getDefaultProps: ->
     element: null
@@ -29,6 +30,7 @@ module.exports = React.createClass
     eventType: null
     stopPropagation: null
     trigger: null
+    nativeKeyBindingsClassName: 'native-key-bindings'
 
   _bindShortcuts: (shortcutsArr) ->
     if @props.trigger
@@ -37,7 +39,15 @@ module.exports = React.createClass
       element.setAttribute('tabindex', @props.tabIndex or -1)
     else
       element = React.findDOMNode(@refs.shortcuts)
+
+    @_monkeyPatchMousetrap()
     mousetrap(element).bind(shortcutsArr, @_handleShortcuts, @props.eventType)
+
+  # TODO: create a pull request on mousetrap's github page
+  _monkeyPatchMousetrap: ->
+    mousetrap::stopCallback = (e, element) =>
+      result = _.includes(element.className, @props.nativeKeyBindingsClassName)
+      return result
 
   _unbindShortcuts: (shortcutsArr) ->
     if @props.trigger

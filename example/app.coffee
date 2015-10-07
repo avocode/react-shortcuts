@@ -66,7 +66,7 @@ module.exports = React.createClass
             name: @constructor.displayName
             handler: @_handleShortcuts2
             stopPropagation: true
-            className: 'content',
+            className: 'content native-key-bindings',
 
             div null,
               h1 null, 'Franz Kafka'

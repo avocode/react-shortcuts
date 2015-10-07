@@ -72,7 +72,7 @@ Create a new JS, Coffee, JSON or CSON file wherever you want (which probably is 
 > **Mousetrap** is used under the
   hood for handling the shortcuts. [Read more][mousetrap] about how you can
   specify keys.
-  
+
 
 ##### Example `keymap` definition (in CoffeeScript):
 
@@ -181,8 +181,11 @@ TodoItem = React.createClass
   of the component.
 
 
+To not trigger the handler callback set `native-key-bindings` className to whichever element you need.
+
 
 ## Thanks, Atom
+
 
 This library is inspired by [Atom Keymap].
 
