@@ -20,7 +20,7 @@ module.exports = React.createClass
     className: React.PropTypes.string
     eventType: React.PropTypes.string
     stopPropagation: React.PropTypes.bool
-    trigger: React.PropTypes.string
+    targetNode: React.PropTypes.object
     nativeKeyBindingsClassName: React.PropTypes.string
 
   getDefaultProps: ->
@@ -29,13 +29,13 @@ module.exports = React.createClass
     className: null
     eventType: null
     stopPropagation: null
-    trigger: null
+    targetNode: null
     nativeKeyBindingsClassName: 'native-key-bindings'
 
   _bindShortcuts: (shortcutsArr) ->
-    if @props.trigger
-      element = document.querySelector(@props.trigger)
-      invariant(element, 'Trigger DOM node was not found.')
+    if @props.targetNode
+      element = @props.targetNode
+      invariant(element, 'TargetNode was not found.')
       element.setAttribute('tabindex', @props.tabIndex or -1)
     else
       element = React.findDOMNode(@refs.shortcuts)
@@ -50,9 +50,8 @@ module.exports = React.createClass
       return result
 
   _unbindShortcuts: (shortcutsArr) ->
-    if @props.trigger
-      element = document.querySelector(@props.trigger)
-      element.removeAttribute('tabindex')
+    if @props.targetNode
+      @props.targetNode.removeAttribute('tabindex')
     else
       element = React.findDOMNode(@refs.shortcuts)
     mousetrap(element).unbind(shortcutsArr)

@@ -19,11 +19,12 @@
   ],
   "scripts": {
     "build": "webpack --progress --colors",
-    "prepublish": "./node_modules/.bin/coffee -o ./ lib/",
+    "prepublish": "coffee -o ./ src/",
     "postpublish": "git clean -f -d",
     "postinstall": "git clean -f -d",
     "start": "webpack-dev-server --hot --progress --colors",
-    "test": "./node_modules/.bin/mocha && ./node_modules/.bin/istanbul report text-summary lcov"
+    "test": "mocha && istanbul report text-summary lcov",
+    "fast-test": "mocha"
   },
   "dependencies": {
     "classnames": "^2.1.3",

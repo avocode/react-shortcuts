@@ -176,7 +176,7 @@ TodoItem = React.createClass
 - `eventType`: string
   - Just for gourmets
 - `stopPropagation`: bool
-- `trigger`: string (querySelector)
+- `targetNode`: DOM Node
   - Use this one with caution. It binds listeners to the provided string instead
   of the component.
 

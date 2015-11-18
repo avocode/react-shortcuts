@@ -1,5 +1,5 @@
 keymap = require './keymap'
-ShortcutManager = require '../lib'
+ShortcutManager = require '../src'
 
 shortcutsManager = new ShortcutManager(keymap)
 
@@ -12,7 +12,7 @@ describe 'Shortcuts component: ', ->
   spyFn = (spy) -> spy()
 
   beforeEach ->
-    Shortcuts = React.createFactory(require '../lib/component')
+    Shortcuts = React.createFactory(require '../src/component')
     props.name = 'Test'
     props.handler = ->
 
@@ -102,9 +102,9 @@ describe 'Shortcuts component: ', ->
       el = element.refs.shortcut._handleShortcuts(obj, 'left')
       expect(spy).toHaveBeenCalled()
 
-    it 'should add tabIndex attr on trigger DOM node', ->
-      props.trigger = '.root'
+    it 'should add tabIndex attr on targetNode', ->
+      props.targetNode = document.querySelector('body')
       props.tabIndex = 123
       element = React.render(React.createElement(Test), document.body)
 
-      expect(element.getDOMNode().getAttribute('tabindex')).toBe('123')
+      expect(document.body.getAttribute('tabindex')).toBe('123')

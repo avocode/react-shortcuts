@@ -1,5 +1,5 @@
 keymap = require './keymap'
-ShortcutManager = require '../lib'
+ShortcutManager = require '../src'
 
 describe 'Shortcut manager: ', ->
 

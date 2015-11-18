@@ -1,5 +1,5 @@
 {div, h1, p} = React.DOM
-Shortcuts = React.createFactory(require '../lib/component')
+Shortcuts = React.createFactory(require '../src/component')
 
 module.exports = React.createClass
   displayName: 'App'
@@ -46,7 +46,7 @@ module.exports = React.createClass
           Shortcuts
             name: @constructor.displayName
             handler: @_handleShortcuts
-            trigger: '#app'
+            targetNode: document.getElementById('app')
             className: 'content',
 
             div null,
@@ -66,7 +66,7 @@ module.exports = React.createClass
             name: @constructor.displayName
             handler: @_handleShortcuts2
             stopPropagation: true
-            className: 'content native-key-bindings',
+            className: 'content',
 
             div null,
               h1 null, 'Franz Kafka'

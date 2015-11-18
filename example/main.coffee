@@ -1,7 +1,7 @@
 require './main.less'
 keymap = require './keymap'
 App = require './app'
-ShortcutManager = require '../lib'
+ShortcutManager = require '../src'
 
 shortcutManager = new ShortcutManager(keymap)
 
