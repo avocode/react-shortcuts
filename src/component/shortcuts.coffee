@@ -20,6 +20,7 @@ module.exports = React.createClass
     className: React.PropTypes.string
     eventType: React.PropTypes.string
     stopPropagation: React.PropTypes.bool
+    preventDefault: React.PropTypes.bool
     targetNode: React.PropTypes.object
     nativeKeyBindingsClassName: React.PropTypes.string
 
@@ -29,6 +30,7 @@ module.exports = React.createClass
     className: null
     eventType: null
     stopPropagation: null
+    preventDefault: true
     targetNode: null
     nativeKeyBindingsClassName: 'native-key-bindings'
 
@@ -72,7 +74,7 @@ module.exports = React.createClass
     @context.shortcuts.removeUpdateListener(@_onUpdate)
 
   _handleShortcuts: (e, keyName) ->
-    e.preventDefault()
+    e.preventDefault() if @props.preventDefault
     e.stopPropagation() if @props.stopPropagation
     shortcutName = @context.shortcuts.findShortcutName(keyName, @props.name)
     @props.handler(shortcutName)
