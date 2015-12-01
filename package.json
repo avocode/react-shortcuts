@@ -1,7 +1,7 @@
 {
   "name": "react-shortcuts",
   "description": "React shortcuts",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "license": "MIT",
   "main": "./",
   "maintainers": [
