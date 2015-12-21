@@ -1,4 +1,5 @@
 React = require 'react'
+ReactDOM = require 'react-dom'
 _ = require 'lodash'
 invariant = require 'invariant'
 mousetrap = require 'mousetrap'
@@ -40,7 +41,7 @@ module.exports = React.createClass
       invariant(element, 'TargetNode was not found.')
       element.setAttribute('tabindex', @props.tabIndex or -1)
     else
-      element = React.findDOMNode(@refs.shortcuts)
+      element = ReactDOM.findDOMNode(this)
 
     @_monkeyPatchMousetrap()
     mousetrap(element).bind(shortcutsArr, @_handleShortcuts, @props.eventType)
@@ -55,7 +56,7 @@ module.exports = React.createClass
     if @props.targetNode
       @props.targetNode.removeAttribute('tabindex')
     else
-      element = React.findDOMNode(@refs.shortcuts)
+      element = ReactDOM.findDOMNode(this)
     mousetrap(element).unbind(shortcutsArr)
 
   _onUpdate: ->
@@ -85,7 +86,6 @@ module.exports = React.createClass
 
     element
       tabIndex: @props.tabIndex or -1
-      className: @props.className
-      ref: 'shortcuts',
+      className: @props.className,
 
       @props.children

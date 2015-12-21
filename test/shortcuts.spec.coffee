@@ -3,6 +3,7 @@ ShortcutManager = require '../src'
 
 shortcutsManager = new ShortcutManager(keymap)
 
+
 describe 'Shortcuts component: ', ->
 
   Shortcuts = null
@@ -71,30 +72,30 @@ describe 'Shortcuts component: ', ->
       element = ReactTestUtils.renderIntoDocument React.createElement(Test)
 
     it 'should create a <shortcuts> DOM element', ->
-      expect(element.getDOMNode().querySelector('shortcuts')).toExist()
+      expect(ReactDOM.findDOMNode(element).querySelector('shortcuts')).toExist()
 
     it 'should add a tabindex attribute to the <shortcuts> element', ->
-      el = element.getDOMNode().querySelector('shortcuts')
+      el = ReactDOM.findDOMNode(element).querySelector('shortcuts')
       expect(el.getAttribute('tabindex')).toExist()
       expect(el.getAttribute('tabindex')).toBe('-1')
 
     it 'should add a className to the <shortcuts> element', ->
-      el = element.getDOMNode().querySelector('shortcuts')
+      el = ReactDOM.findDOMNode(element).querySelector('shortcuts')
       expect(el.className).toBe('testing-class')
 
     it 'should use custom HTML element', ->
       props.element = React.DOM.section
       element = ReactTestUtils.renderIntoDocument React.createElement(Test)
-      expect(element.getDOMNode().querySelector('section.testing-class')).toExist()
+      expect(ReactDOM.findDOMNode(element).querySelector('section.testing-class')).toExist()
 
     it 'should use a custom tabindex attribute value', ->
       props.tabIndex = 666
       element = ReactTestUtils.renderIntoDocument React.createElement(Test)
-      el = element.getDOMNode().querySelector('.testing-class')
+      el = ReactDOM.findDOMNode(element).querySelector('.testing-class')
       expect(el.getAttribute('tabindex')).toBe('666')
 
     it 'should render its children as the children of the <shortcuts> element', ->
-      el = element.getDOMNode().querySelector('.child')
+      el = ReactDOM.findDOMNode(element).querySelector('.child')
       expect(el).toExist()
 
     it 'should fire shortcuts handler', ->
@@ -105,6 +106,6 @@ describe 'Shortcuts component: ', ->
     it 'should add tabIndex attr on targetNode', ->
       props.targetNode = document.querySelector('body')
       props.tabIndex = 123
-      element = React.render(React.createElement(Test), document.body)
+      element = ReactDOM.render(React.createElement(Test), document.body)
 
       expect(document.body.getAttribute('tabindex')).toBe('123')

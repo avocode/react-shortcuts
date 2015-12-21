@@ -1,6 +1,7 @@
 global.expect = require 'expect'
 global.jsdom = require 'jsdom'
 global.React = require 'react'
+global.ReactDOM = require 'react-dom'
 global.ReactTestUtils = require 'react/lib/ReactTestUtils'
 global._ = require 'lodash'
 
