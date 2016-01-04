@@ -28,12 +28,14 @@ module.exports = React.createClass
     stopPropagation: React.PropTypes.bool
     preventDefault: React.PropTypes.bool
     targetNode: React.PropTypes.object
+    ref: React.PropTypes.string
     nativeKeyBindingsClassName: React.PropTypes.string
 
   getDefaultProps: ->
     element: null
     tabIndex: null
     className: null
+    ref: null
     eventType: null
     stopPropagation: null
     preventDefault: true
@@ -96,6 +98,7 @@ module.exports = React.createClass
 
     element
       tabIndex: @props.tabIndex or -1
+      ref: @props.ref
       className: @props.className,
 
       @props.children
