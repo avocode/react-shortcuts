@@ -12,7 +12,7 @@ module.exports = React.createClass
 
   displayName: 'Shortcuts'
 
-  #HACK: mousetrap must be instance per component
+  # NOTE: mousetrap must be instance per component
   _mousetrap: null
 
   contextTypes:
@@ -44,7 +44,7 @@ module.exports = React.createClass
 
   _bindShortcuts: (shortcutsArr) ->
     element = @_getElementToBind()
-    #@_monkeyPatchMousetrap()
+    @_monkeyPatchMousetrap()
     element.setAttribute('tabindex', @props.tabIndex or -1)
     @_mousetrap = createMousetrap(element)
     @_mousetrap.bind(shortcutsArr, @_handleShortcuts, @props.eventType)
