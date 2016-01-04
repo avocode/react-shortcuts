@@ -18,10 +18,7 @@
     "mousetrap"
   ],
   "scripts": {
-    "build": "webpack --progress --colors",
     "prepublish": "coffee -o ./ src/",
-    "postpublish": "git clean -f -d",
-    "postinstall": "git clean -f -d",
     "start": "webpack-dev-server --hot --progress --colors",
     "test": "mocha && istanbul report text-summary lcov",
     "fast-test": "mocha"
