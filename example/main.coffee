@@ -1,3 +1,4 @@
+ReactDOM = require('react-dom')
 require './main.less'
 keymap = require './keymap'
 App = require './app'
@@ -9,4 +10,4 @@ shortcutManager = new ShortcutManager(keymap)
 window.shortcutManager = shortcutManager
 
 element = React.createElement(App, shortcuts: shortcutManager)
-React.render(element, document.getElementById('app'))
+ReactDOM.render(element, document.getElementById('app'))

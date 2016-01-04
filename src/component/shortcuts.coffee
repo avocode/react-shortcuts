@@ -1,13 +1,19 @@
 React = require 'react'
+ReactDOM = require 'react-dom'
 _ = require 'lodash'
 invariant = require 'invariant'
-mousetrap = require 'mousetrap'
+createMousetrap = require 'mousetrap'
 
 shortcuts = React.createFactory 'shortcuts'
+
+{div, button} = React.DOM
 
 module.exports = React.createClass
 
   displayName: 'Shortcuts'
+
+  # NOTE: mousetrap must be instance per component
+  _mousetrap: null
 
   contextTypes:
     shortcuts: React.PropTypes.object.isRequired
@@ -22,12 +28,14 @@ module.exports = React.createClass
     stopPropagation: React.PropTypes.bool
     preventDefault: React.PropTypes.bool
     targetNode: React.PropTypes.object
+    ref: React.PropTypes.string
     nativeKeyBindingsClassName: React.PropTypes.string
 
   getDefaultProps: ->
     element: null
     tabIndex: null
     className: null
+    ref: null
     eventType: null
     stopPropagation: null
     preventDefault: true
@@ -35,28 +43,31 @@ module.exports = React.createClass
     nativeKeyBindingsClassName: 'native-key-bindings'
 
   _bindShortcuts: (shortcutsArr) ->
-    if @props.targetNode
-      element = @props.targetNode
-      invariant(element, 'TargetNode was not found.')
-      element.setAttribute('tabindex', @props.tabIndex or -1)
-    else
-      element = React.findDOMNode(@refs.shortcuts)
-
+    element = @_getElementToBind()
     @_monkeyPatchMousetrap()
-    mousetrap(element).bind(shortcutsArr, @_handleShortcuts, @props.eventType)
+    element.setAttribute('tabindex', @props.tabIndex or -1)
+    @_mousetrap = createMousetrap(element)
+    @_mousetrap.bind(shortcutsArr, @_handleShortcuts, @props.eventType)
 
   # TODO: create a pull request on mousetrap's github page
   _monkeyPatchMousetrap: ->
-    mousetrap::stopCallback = (e, element) =>
+    createMousetrap::stopCallback = (e, element) =>
       result = _.includes(element.className, @props.nativeKeyBindingsClassName)
       return result
 
-  _unbindShortcuts: (shortcutsArr) ->
+  _getElementToBind: ->
     if @props.targetNode
-      @props.targetNode.removeAttribute('tabindex')
+      element = @props.targetNode
     else
-      element = React.findDOMNode(@refs.shortcuts)
-    mousetrap(element).unbind(shortcutsArr)
+      element = ReactDOM.findDOMNode(this)
+
+    invariant(element, 'TargetNode was not found.')
+    return element
+
+  _unbindShortcuts: (shortcutsArr) ->
+    element = @_getElementToBind()
+    element.removeAttribute('tabindex')
+    @_mousetrap?.unbind(shortcutsArr, @props.eventType)
 
   _onUpdate: ->
     shortcutsArr = @context.shortcuts.getShortcuts(@props.name)
@@ -64,8 +75,7 @@ module.exports = React.createClass
     @_bindShortcuts(shortcutsArr)
 
   componentDidMount: ->
-    shortcutsArr = @context.shortcuts.getShortcuts(@props.name)
-    @_bindShortcuts(shortcutsArr)
+    @_onUpdate()
     @context.shortcuts.addUpdateListener(@_onUpdate)
 
   componentWillUnmount: ->
@@ -77,7 +87,10 @@ module.exports = React.createClass
     e.preventDefault() if @props.preventDefault
     e.stopPropagation() if @props.stopPropagation
     shortcutName = @context.shortcuts.findShortcutName(keyName, @props.name)
-    @props.handler(shortcutName)
+    @props.handler(shortcutName, e)
+
+  _onClick: ->
+    @_unbindShortcuts(@context.shortcuts.getShortcuts(@props.name))
 
   render: ->
     element = shortcuts
@@ -85,7 +98,7 @@ module.exports = React.createClass
 
     element
       tabIndex: @props.tabIndex or -1
-      className: @props.className
-      ref: 'shortcuts',
+      ref: @props.ref
+      className: @props.className,
 
       @props.children

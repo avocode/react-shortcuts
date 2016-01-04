@@ -26,12 +26,12 @@ describe 'Shortcut manager: ', ->
 
   it 'setKeymap: should throw an error when setKeymap called without arg', ->
     manager = new ShortcutManager(keymap)
-    error = /Error: Invariant Violation: setKeymap: keymap argument is not defined or falsy./
+    error = /setKeymap: keymap argument is not defined or falsy./
     expect(manager.setKeymap).toThrow(error)
 
   it 'add: should throw an error when `add` is called with no arguments', ->
     manager = new ShortcutManager(keymap)
-    error = /Error: Invariant Violation: setKeymap: keymap argument is not defined or falsy/
+    error = /setKeymap: keymap argument is not defined or falsy/
     expect(manager.setKeymap).toThrow(error)
 
   it 'add: should return _keymap obj that is not empty', ->
@@ -61,7 +61,7 @@ describe 'Shortcut manager: ', ->
     manager = new ShortcutManager(keymap)
     notExist = ->
       manager.getShortcuts('NotExist')
-    expect(notExist).toThrow(/Error: Invariant Violation: getShortcuts: There are no shortcuts with name NotExist./)
+    expect(notExist).toThrow(/getShortcuts: There are no shortcuts with name NotExist./)
 
   it 'findShortcutName: should return correct key label', ->
     manager = new ShortcutManager()
@@ -86,5 +86,5 @@ describe 'Shortcut manager: ', ->
     manager = new ShortcutManager()
     fn = ->
       manager.findShortcutName('left')
-    expect(manager.findShortcutName).toThrow(/Error: Invariant Violation: findShortcutName: keyName argument is not defined or falsy./)
-    expect(fn).toThrow(/Error: Invariant Violation: findShortcutName: componentName argument is not defined or falsy./)
+    expect(manager.findShortcutName).toThrow(/findShortcutName: keyName argument is not defined or falsy./)
+    expect(fn).toThrow(/findShortcutName: componentName argument is not defined or falsy./)
