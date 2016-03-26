@@ -37,21 +37,26 @@ module.exports = React.createClass
     className: null
     ref: null
     eventType: null
-    stopPropagation: null
-    preventDefault: true
+    stopPropagation: true
+    preventDefault: false
     targetNode: null
     nativeKeyBindingsClassName: 'native-key-bindings'
 
   _bindShortcuts: (shortcutsArr) ->
     element = @_getElementToBind()
-    @_monkeyPatchMousetrap()
     element.setAttribute('tabindex', @props.tabIndex or -1)
     @_mousetrap = createMousetrap(element)
+    @_monkeyPatchMousetrap()
     @_mousetrap.bind(shortcutsArr, @_handleShortcuts, @props.eventType)
 
-  # TODO: create a pull request on mousetrap's github page
   _monkeyPatchMousetrap: ->
-    createMousetrap::stopCallback = (e, element) =>
+    originalHandleKey = @_mousetrap._handleKey
+    @_mousetrap._handleKey = (character, modifiers, e) =>
+      e.preventDefault() if @props.preventDefault
+      e.stopPropagation() if @props.stopPropagation
+      originalHandleKey(character, modifiers, e)
+
+    @_mousetrap.stopCallback = (e, element) =>
       result = _.includes(element.className, @props.nativeKeyBindingsClassName)
       return result
 

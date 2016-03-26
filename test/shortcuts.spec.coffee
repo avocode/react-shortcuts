@@ -99,7 +99,9 @@ describe 'Shortcuts component: ', ->
       expect(el).toExist()
 
     it 'should fire shortcuts handler', ->
-      obj = preventDefault: ->
+      obj =
+        preventDefault: ->
+        stopPropagation: ->
       el = element.refs.shortcut._handleShortcuts(obj, 'left')
       expect(spy).toHaveBeenCalled()
 
