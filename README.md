@@ -140,7 +140,7 @@ Shortcuts = require `react-shortcuts/component`
 TodoItem = React.createClass
   displayName: 'TodoItem'
 
-  _handleShortcuts: (action) ->
+  _handleShortcuts: (action, event) ->
     switch action
       when 'MOVE_LEFT' then console.log('moving left')
       when 'MOVE_RIGHT' then console.log('moving right')
@@ -168,20 +168,18 @@ TodoItem = React.createClass
 
 - `handler`: func.isRequired
 - `name`: string.isRequired
-- `element`: func (React.DOM)
-  - You can render a custom element instead of the default `shortcuts` one
 - `tabIndex`: number
   - Default is `-1`
 - `className`: string
 - `eventType`: string
   - Just for gourmets
 - `stopPropagation`: bool
+- `preventDefault`: bool
 - `targetNode`: DOM Node
   - Use this one with caution. It binds listeners to the provided string instead
   of the component.
-
-
-To not trigger the handler callback set `native-key-bindings` className to whichever element you need.
+- `isGlobal`: bool
+  - Use this when you have some global app wide shortcuts like `CMD+Q`.
 
 
 ## Thanks, Atom

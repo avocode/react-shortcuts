@@ -9,10 +9,12 @@ describe 'Shortcuts component: ', ->
   Shortcuts = null
   Test = null
   props = {}
-  spy = expect.createSpy()
-  spyFn = (spy) -> spy()
+  spy = null
 
   beforeEach ->
+    spy = expect.createSpy()
+    spyFn = (spy) -> spy()
+
     Shortcuts = React.createFactory(require '../src/component')
     props.name = 'Test'
     props.handler = ->
@@ -37,7 +39,9 @@ describe 'Shortcuts component: ', ->
 
         React.DOM.div className: 'root',
           Shortcuts props,
-            React.DOM.span className: 'child'
+            React.DOM.span
+              className: 'child'
+              ref: 'child'
 
 
   it 'should have a displayName', ->
@@ -55,14 +59,15 @@ describe 'Shortcuts component: ', ->
     expect(element.type(props).type.propTypes).toExist()
     expect(element.type(props).type.propTypes.handler).toExist()
     expect(element.type(props).type.propTypes.name).toExist()
-    expect(element.type(props).type.propTypes.element).toExist()
     expect(element.type(props).type.propTypes.tabIndex).toExist()
     expect(element.type(props).type.propTypes.eventType).toExist()
+    expect(element.type(props).type.propTypes.isGlobal).toExist()
 
 
   it 'should default the eventType property to null', ->
     element = React.createElement(Shortcuts)
     expect(element.type(props).type.getDefaultProps().eventType).toBe(null)
+
 
   describe 'Rendered element into document', ->
     element = null
@@ -82,11 +87,6 @@ describe 'Shortcuts component: ', ->
     it 'should add a className to the <shortcuts> element', ->
       el = ReactDOM.findDOMNode(element).querySelector('shortcuts')
       expect(el.className).toBe('testing-class')
-
-    it 'should use custom HTML element', ->
-      props.element = React.DOM.section
-      element = ReactTestUtils.renderIntoDocument React.createElement(Test)
-      expect(ReactDOM.findDOMNode(element).querySelector('section.testing-class')).toExist()
 
     it 'should use a custom tabindex attribute value', ->
       props.tabIndex = 666

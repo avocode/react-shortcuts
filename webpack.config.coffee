@@ -39,7 +39,6 @@ module.exports =
     noParse: /\.min\.js/
   externals: [
     react: 'React'
-    lodash: '_'
   ]
   coffeelint:
     configFile: './.coffeelint'

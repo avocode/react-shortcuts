@@ -11,5 +11,6 @@ before (done) ->
     global.document = window.document
     global.Image = window.Image
     global.navigator = window.navigator
+    global.CustomEvent = window.CustomEvent
 
     done()

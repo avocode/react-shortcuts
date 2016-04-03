@@ -1,15 +1,12 @@
 React = require 'react'
 ReactDOM = require 'react-dom'
-_ = require 'lodash'
 invariant = require 'invariant'
 createMousetrap = require 'mousetrap'
 
 shortcuts = React.createFactory 'shortcuts'
 
-{div, button} = React.DOM
 
 module.exports = React.createClass
-
   displayName: 'Shortcuts'
 
   # NOTE: mousetrap must be instance per component
@@ -21,7 +18,6 @@ module.exports = React.createClass
   propTypes:
     handler: React.PropTypes.func.isRequired
     name: React.PropTypes.string.isRequired
-    element: React.PropTypes.func
     tabIndex: React.PropTypes.number
     className: React.PropTypes.string
     eventType: React.PropTypes.string
@@ -29,10 +25,9 @@ module.exports = React.createClass
     preventDefault: React.PropTypes.bool
     targetNode: React.PropTypes.object
     ref: React.PropTypes.string
-    nativeKeyBindingsClassName: React.PropTypes.string
+    isGlobal: React.PropTypes.bool
 
   getDefaultProps: ->
-    element: null
     tabIndex: null
     className: null
     ref: null
@@ -40,7 +35,7 @@ module.exports = React.createClass
     stopPropagation: true
     preventDefault: false
     targetNode: null
-    nativeKeyBindingsClassName: 'native-key-bindings'
+    isGlobal: false
 
   _bindShortcuts: (shortcutsArr) ->
     element = @_getElementToBind()
@@ -49,16 +44,31 @@ module.exports = React.createClass
     @_monkeyPatchMousetrap()
     @_mousetrap.bind(shortcutsArr, @_handleShortcuts, @props.eventType)
 
-  _monkeyPatchMousetrap: ->
-    originalHandleKey = @_mousetrap._handleKey
-    @_mousetrap._handleKey = (character, modifiers, e) =>
-      e.preventDefault() if @props.preventDefault
-      e.stopPropagation() if @props.stopPropagation
-      originalHandleKey(character, modifiers, e)
+    if @props.isGlobal
+      element.addEventListener 'shortcuts:global', @_customGlobalHandler
 
-    @_mousetrap.stopCallback = (e, element) =>
-      result = _.includes(element.className, @props.nativeKeyBindingsClassName)
-      return result
+  _customGlobalHandler: (e) ->
+    {character, modifiers, event} = e.detail
+
+    if e.target isnt ReactDOM.findDOMNode(this) and
+        e.target isnt @props.targetNode
+      # NOTE: this is kind of hack
+      @_mousetrap._handleKey(character, modifiers, event, true)
+
+  _monkeyPatchMousetrap: ->
+    element = @_getElementToBind()
+    originalHandleKey = @_mousetrap._handleKey
+
+    @_mousetrap._handleKey = (character, modifiers, event, stopDispatching) =>
+      if not stopDispatching
+        element.dispatchEvent new CustomEvent 'shortcuts:global',
+          detail: {character, modifiers, event}
+          bubbles: true
+          cancelable: true
+
+      event.preventDefault() if @props.preventDefault
+      event.stopPropagation() if @props.stopPropagation
+      originalHandleKey(character, modifiers, event)
 
   _getElementToBind: ->
     if @props.targetNode
@@ -72,7 +82,10 @@ module.exports = React.createClass
   _unbindShortcuts: (shortcutsArr) ->
     element = @_getElementToBind()
     element.removeAttribute('tabindex')
-    @_mousetrap?.unbind(shortcutsArr, @props.eventType)
+
+    if @_mousetrap
+      @_mousetrap.unbind(shortcutsArr, @props.eventType)
+      @_mousetrap.reset()
 
   _onUpdate: ->
     shortcutsArr = @context.shortcuts.getShortcuts(@props.name)
@@ -88,18 +101,16 @@ module.exports = React.createClass
     @_unbindShortcuts(shortcutsArr)
     @context.shortcuts.removeUpdateListener(@_onUpdate)
 
-  _handleShortcuts: (e, keyName) ->
-    e.preventDefault() if @props.preventDefault
-    e.stopPropagation() if @props.stopPropagation
-    shortcutName = @context.shortcuts.findShortcutName(keyName, @props.name)
-    @props.handler(shortcutName, e)
+    if @props.isGlobal
+      element = @_getElementToBind()
+      element.removeEventListener 'shortcuts:global', @_customGlobalHandler
 
-  _onClick: ->
-    @_unbindShortcuts(@context.shortcuts.getShortcuts(@props.name))
+  _handleShortcuts: (event, keyName) ->
+    shortcutName = @context.shortcuts.findShortcutName(keyName, @props.name)
+    @props.handler(shortcutName, event)
 
   render: ->
     element = shortcuts
-    element = @props.element if _.isFunction(@props.element)
 
     element
       tabIndex: @props.tabIndex or -1
