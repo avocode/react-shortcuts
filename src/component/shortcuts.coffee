@@ -55,19 +55,24 @@ module.exports = React.createClass
       # NOTE: this is kind of hack
       @_mousetrap._handleKey(character, modifiers, event, true)
 
+  _lastEvent: null
+
   _monkeyPatchMousetrap: ->
     element = @_getElementToBind()
     originalHandleKey = @_mousetrap._handleKey
 
-    @_mousetrap._handleKey = (character, modifiers, event, stopDispatching) =>
-      if not stopDispatching
+    @_mousetrap._handleKey = (character, modifiers, event, customEvent) =>
+      if not customEvent
         element.dispatchEvent new CustomEvent 'shortcuts:global',
           detail: {character, modifiers, event}
           bubbles: true
           cancelable: true
 
+        return null if @_lastEvent is event
+
+      @_lastEvent = event
       event.preventDefault() if @props.preventDefault
-      event.stopPropagation() if @props.stopPropagation
+      event.stopPropagation() if @props.stopPropagation and not customEvent
       originalHandleKey(character, modifiers, event)
 
   _getElementToBind: ->
@@ -100,6 +105,7 @@ module.exports = React.createClass
     shortcutsArr = @context.shortcuts.getShortcuts(@props.name)
     @_unbindShortcuts(shortcutsArr)
     @context.shortcuts.removeUpdateListener(@_onUpdate)
+    @_lastEvent = null
 
     if @props.isGlobal
       element = @_getElementToBind()
