@@ -119,6 +119,7 @@ module.exports = React.createClass
     element = shortcuts
 
     element
+      id: @props.id
       tabIndex: @props.tabIndex or -1
       ref: @props.ref
       className: @props.className,

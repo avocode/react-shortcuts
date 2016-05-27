@@ -73,6 +73,7 @@ describe 'Shortcuts component: ', ->
     element = null
 
     before ->
+      props.id = 'my-id'
       props.className = 'testing-class'
       props.style = color: 'blue'
       element = ReactTestUtils.renderIntoDocument React.createElement(Test)
@@ -84,6 +85,10 @@ describe 'Shortcuts component: ', ->
       el = ReactDOM.findDOMNode(element).querySelector('shortcuts')
       expect(el.getAttribute('tabindex')).toExist()
       expect(el.getAttribute('tabindex')).toBe('-1')
+
+    it 'should add an id to the <shortcuts> element', ->
+      el = ReactDOM.findDOMNode(element).querySelector('shortcuts')
+      expect(el.id).toBe('my-id')
 
     it 'should add a className to the <shortcuts> element', ->
       el = ReactDOM.findDOMNode(element).querySelector('shortcuts')
