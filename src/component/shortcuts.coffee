@@ -122,5 +122,6 @@ module.exports = React.createClass
       tabIndex: @props.tabIndex or -1
       ref: @props.ref
       className: @props.className,
+      style: @props.style
 
       @props.children

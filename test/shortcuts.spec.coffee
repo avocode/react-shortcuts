@@ -74,6 +74,7 @@ describe 'Shortcuts component: ', ->
 
     before ->
       props.className = 'testing-class'
+      props.style = color: 'blue'
       element = ReactTestUtils.renderIntoDocument React.createElement(Test)
 
     it 'should create a <shortcuts> DOM element', ->
@@ -87,6 +88,10 @@ describe 'Shortcuts component: ', ->
     it 'should add a className to the <shortcuts> element', ->
       el = ReactDOM.findDOMNode(element).querySelector('shortcuts')
       expect(el.className).toBe('testing-class')
+
+    it 'should add a style to the <shortcuts> element', ->
+      el = ReactDOM.findDOMNode(element).querySelector('shortcuts')
+      expect(el.style.color).toBe('blue')
 
     it 'should use a custom tabindex attribute value', ->
       props.tabIndex = 666
