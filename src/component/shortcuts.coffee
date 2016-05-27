@@ -1,7 +1,7 @@
 React = require 'react'
 ReactDOM = require 'react-dom'
 invariant = require 'invariant'
-createMousetrap = require 'mousetrap'
+Combokeys = require 'combokeys'
 
 shortcuts = React.createFactory 'shortcuts'
 
@@ -9,8 +9,8 @@ shortcuts = React.createFactory 'shortcuts'
 module.exports = React.createClass
   displayName: 'Shortcuts'
 
-  # NOTE: mousetrap must be instance per component
-  _mousetrap: null
+  # NOTE: combokeys must be instance per component
+  _combokeys: null
 
   contextTypes:
     shortcuts: React.PropTypes.object.isRequired
@@ -40,9 +40,9 @@ module.exports = React.createClass
   _bindShortcuts: (shortcutsArr) ->
     element = @_getElementToBind()
     element.setAttribute('tabindex', @props.tabIndex or -1)
-    @_mousetrap = createMousetrap(element)
-    @_monkeyPatchMousetrap()
-    @_mousetrap.bind(shortcutsArr, @_handleShortcuts, @props.eventType)
+    @_combokeys = new Combokeys(element)
+    @_monkeyPatchCombokeys()
+    @_combokeys.bind(shortcutsArr, @_handleShortcuts, @props.eventType)
 
     if @props.isGlobal
       element.addEventListener 'shortcuts:global', @_customGlobalHandler
@@ -53,15 +53,15 @@ module.exports = React.createClass
     if e.target isnt ReactDOM.findDOMNode(this) and
         e.target isnt @props.targetNode
       # NOTE: this is kind of hack
-      @_mousetrap._handleKey(character, modifiers, event, true)
+      @_combokeys._handleKey(character, modifiers, event, true)
 
   _lastEvent: null
 
-  _monkeyPatchMousetrap: ->
+  _monkeyPatchCombokeys: ->
     element = @_getElementToBind()
-    originalHandleKey = @_mousetrap._handleKey
+    originalHandleKey = @_combokeys._handleKey
 
-    @_mousetrap._handleKey = (character, modifiers, event, customEvent) =>
+    @_combokeys._handleKey = (character, modifiers, event, customEvent) =>
       if not customEvent
         element.dispatchEvent new CustomEvent 'shortcuts:global',
           detail: {character, modifiers, event}
@@ -88,9 +88,9 @@ module.exports = React.createClass
     element = @_getElementToBind()
     element.removeAttribute('tabindex')
 
-    if @_mousetrap
-      @_mousetrap.unbind(shortcutsArr, @props.eventType)
-      @_mousetrap.reset()
+    if @_combokeys
+      @_combokeys.unbind(shortcutsArr, @props.eventType)
+      @_combokeys.reset()
 
   _onUpdate: ->
     shortcutsArr = @context.shortcuts.getShortcuts(@props.name)
@@ -119,8 +119,10 @@ module.exports = React.createClass
     element = shortcuts
 
     element
+      id: @props.id
       tabIndex: @props.tabIndex or -1
       ref: @props.ref
       className: @props.className,
+      style: @props.style
 
       @props.children

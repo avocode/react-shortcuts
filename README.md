@@ -69,8 +69,8 @@ Create a new JS, Coffee, JSON or CSON file wherever you want (which probably is 
   shortcut may be composed of single keys (`a`, `6`,…), combinations
   (`command+shift+k`) or sequences (`up up down down left right left right B A`).
 
-> **Mousetrap** is used under the
-  hood for handling the shortcuts. [Read more][mousetrap] about how you can
+> **Combokeys** is used under the
+  hood for handling the shortcuts. [Read more][combokeys] about how you can
   specify keys.
 
 
@@ -190,5 +190,5 @@ This library is inspired by [Atom Keymap].
 
 [Atom Keymap]: https://github.com/atom/atom-keymap/
 [travis]: https://travis-ci.org/avocode/react-shortcuts
-[mousetrap]: https://craig.is/killing/mice
+[combokeys]: https://github.com/PolicyStat/combokeys
 [keymaps]: https://github.com/atom/atom-keymap/
