@@ -46,7 +46,7 @@ module.exports = React.createClass
           Shortcuts
             name: @constructor.displayName
             handler: @_handleShortcuts
-            targetNode: document.getElementById('app')
+            targetNodeSelector: '#app'
             className: 'content',
 
             div null,
