@@ -154,19 +154,19 @@ describe 'Shortcuts component', ->
 
     expect(wrapper.props().preventDefault).to.be.equal(true)
 
-  it 'should not have targetNode prop by default', ->
+  it 'should not have targetNodeSelector prop by default', ->
     shortcutComponent = React.createElement(Shortcuts, baseProps)
     wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
 
-    expect(wrapper.props().targetNode).to.be.equal(null)
+    expect(wrapper.props().targetNodeSelector).to.be.equal(null)
 
   it 'should have targetNode prop', ->
     props = _.assign {}, baseProps,
-      targetNode: document.body
+      targetNodeSelector: 'body'
     shortcutComponent = React.createElement(Shortcuts, props)
     wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
 
-    expect(wrapper.props().targetNode).to.be.equal(document.body)
+    expect(wrapper.props().targetNodeSelector).to.be.equal('body')
 
   it 'should have global prop set to false by default', ->
     shortcutComponent = React.createElement(Shortcuts, baseProps)
@@ -279,6 +279,27 @@ describe 'Shortcuts component', ->
     simulant.fire(node, 'keydown', { keyCode: enter, key: 'Enter' })
 
     expect(wrapper.props().handler).to.have.been.called
+
+  it 'should fire the handler when using targetNodeSelector', ->
+    props = _.assign {}, baseProps,
+      targetNodeSelector: 'body'
+    shortcutComponent = React.createElement(Shortcuts, props)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    enter = 13
+    simulant.fire(document.body, 'keydown', { keyCode: enter, key: 'Enter' })
+
+    expect(wrapper.props().handler).to.have.been.called
+
+  it 'should throw and error if targetNodeSelector is not found', ->
+    props = _.assign {}, baseProps,
+      targetNodeSelector: 'non-existing'
+    shortcutComponent = React.createElement(Shortcuts, props)
+
+    try
+      enzyme.mount(shortcutComponent, { context: baseContext })
+    catch err
+      expect(err).to.match(/Node selector 'non-existing'  was not found/)
 
 
   describe 'Shortcuts component inside Shortcuts component:', ->
