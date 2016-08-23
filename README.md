@@ -175,10 +175,10 @@ TodoItem = React.createClass
   - Just for gourmets
 - `stopPropagation`: bool
 - `preventDefault`: bool
-- `targetNode`: DOM Node
+- `targetNodeSelector`: DOM Node Selector like `body` or `.my-class`
   - Use this one with caution. It binds listeners to the provided string instead
   of the component.
-- `isGlobal`: bool
+- `global`: bool
   - Use this when you have some global app wide shortcuts like `CMD+Q`.
 
 
