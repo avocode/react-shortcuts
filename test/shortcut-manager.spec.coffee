@@ -1,90 +1,93 @@
+chai = require 'chai'
+_ = require 'lodash'
+sinonChai = require 'sinon-chai'
+sinon = require 'sinon'
+
 keymap = require './keymap'
 ShortcutManager = require '../src'
 
-describe 'Shortcut manager: ', ->
+chai.use(sinonChai)
 
+expect = chai.expect
+
+
+describe 'Shortcut manager: ', ->
   it 'should return empty object when calling empty constructor', ->
     manager = new ShortcutManager()
-    expect(manager._keymap).toExist(_.isEqual(manager._keymap, {}))
+    expect(manager.getAllShortcuts()).to.be.empty
 
-  it 'should return _keymap obj that is not empty', ->
+  it 'should return all shortcuts', ->
     manager = new ShortcutManager(keymap)
-    expect(manager._keymap).toExist(not _.isEmpty(manager._keymap))
+    expect(manager.getAllShortcuts()).to.not.be.empty
+    expect(manager.getAllShortcuts()).to.be.equal(keymap)
+
+    manager.setKeymap({})
+    expect(manager.getAllShortcuts()).to.be.empty
+
+    manager.setKeymap(keymap)
+    expect(manager.getAllShortcuts()).to.be.equal(keymap)
 
   it 'should expose the change event type as a static constant', ->
-    expect(ShortcutManager.CHANGE_EVENT).toExist()
+    expect(ShortcutManager.CHANGE_EVENT).to.exist
 
-  it 'CHANGE_EVENT: should have static CHANGE_EVENT with defined value', ->
-    expect(ShortcutManager.CHANGE_EVENT).toBe('shortcuts:update')
+  it 'should have static CHANGE_EVENT', ->
+    expect(ShortcutManager.CHANGE_EVENT).to.be.equal('shortcuts:update')
 
-  it 'emitUpdate: should call onUpdate when update called', ->
+  it 'should call onUpdate', ->
     manager = new ShortcutManager()
-    spy = expect.createSpy()
+    spy = sinon.spy()
     manager.addUpdateListener(spy)
-    manager.setKeymap(true)
-    expect(spy).toHaveBeenCalled()
+    manager.setKeymap({})
+    expect(spy).to.have.beenCalled
 
-  it 'setKeymap: should throw an error when setKeymap called without arg', ->
+  it 'should throw an error when setKeymap is called without arg', ->
     manager = new ShortcutManager(keymap)
     error = /setKeymap: keymap argument is not defined or falsy./
-    expect(manager.setKeymap).toThrow(error)
+    expect(manager.setKeymap).to.throw(error)
 
-  it 'add: should throw an error when `add` is called with no arguments', ->
+  it 'should return array of shortcuts', ->
     manager = new ShortcutManager(keymap)
-    error = /setKeymap: keymap argument is not defined or falsy/
-    expect(manager.setKeymap).toThrow(error)
+    shortcuts = manager.getShortcuts('Test')
+    expect(shortcuts).to.be.an.array
 
-  it 'add: should return _keymap obj that is not empty', ->
-    manager = new ShortcutManager()
-    manager.setKeymap(keymap)
-    expect(manager._keymap).toExist(not _.isEmpty(manager._keymap))
+    shouldContainStrings = _.every(shortcuts, _.isString)
+    expect(shouldContainStrings).to.be.equal(true)
+    expect(shortcuts.length).to.be.equal(5)
 
-  it 'getAllShortcuts: should return _keymap that is not empty', ->
-    manager = new ShortcutManager(keymap)
-    expect(manager.getAllShortcuts()).toExist(not _.isEmpty(manager._keymap))
+    shortcuts = manager.getShortcuts('Next')
+    expect(shortcuts).to.be.an.array
+    shouldContainStrings = _.every(shortcuts, _.isString)
+    expect(shouldContainStrings).to.be.equal(true)
+    expect(shortcuts.length).to.be.equal(5)
 
-  it 'getShortcuts: should return array of shortcuts', ->
-    manager = new ShortcutManager(keymap)
-    arr = manager.getShortcuts('Test')
-    expect(_.isArray(arr)).toBe(true)
-    shouldContainStrings = _.every(arr, _.isString)
-    expect(shouldContainStrings).toBe(true)
-    expect(arr.length).toBe(5)
-
-    arr = manager.getShortcuts('Next')
-    expect(_.isArray(arr)).toBe(true)
-    shouldContainStrings = _.every(arr, _.isString)
-    expect(shouldContainStrings).toBe(true)
-    expect(arr.length).toBe(5)
-
-  it 'getShortcuts: should throw an error', ->
+  it 'should throw an error', ->
     manager = new ShortcutManager(keymap)
     notExist = ->
       manager.getShortcuts('NotExist')
-    expect(notExist).toThrow(/getShortcuts: There are no shortcuts with name NotExist./)
+    expect(notExist).to.throw(/getShortcuts: There are no shortcuts with name NotExist./)
 
   it 'findShortcutName: should return correct key label', ->
     manager = new ShortcutManager()
     manager.setKeymap(keymap)
 
     # Test
-    expect(manager.findShortcutName('alt+backspace', 'Test')).toBe('DELETE')
-    expect(manager.findShortcutName('w', 'Test')).toBe('MOVE_UP')
-    expect(manager.findShortcutName('up', 'Test')).toBe('MOVE_UP')
-    expect(manager.findShortcutName('left', 'Test')).toBe('MOVE_LEFT')
-    expect(manager.findShortcutName('right', 'Test')).toBe('MOVE_RIGHT')
+    expect(manager.findShortcutName('alt+backspace', 'Test')).to.be.equal('DELETE')
+    expect(manager.findShortcutName('w', 'Test')).to.be.equal('MOVE_UP')
+    expect(manager.findShortcutName('up', 'Test')).to.be.equal('MOVE_UP')
+    expect(manager.findShortcutName('left', 'Test')).to.be.equal('MOVE_LEFT')
+    expect(manager.findShortcutName('right', 'Test')).to.be.equal('MOVE_RIGHT')
 
     # Next
-    expect(manager.findShortcutName('alt+o', 'Next')).toBe('OPEN')
-    expect(manager.findShortcutName('d', 'Next')).toBe('ABORT')
-    expect(manager.findShortcutName('c', 'Next')).toBe('ABORT')
-    expect(manager.findShortcutName('esc', 'Next')).toBe('CLOSE')
-    expect(manager.findShortcutName('enter', 'Next')).toBe('CLOSE')
+    expect(manager.findShortcutName('alt+o', 'Next')).to.be.equal('OPEN')
+    expect(manager.findShortcutName('d', 'Next')).to.be.equal('ABORT')
+    expect(manager.findShortcutName('c', 'Next')).to.be.equal('ABORT')
+    expect(manager.findShortcutName('esc', 'Next')).to.be.equal('CLOSE')
+    expect(manager.findShortcutName('enter', 'Next')).to.be.equal('CLOSE')
 
 
   it 'findShortcutName: should throw an error', ->
     manager = new ShortcutManager()
     fn = ->
       manager.findShortcutName('left')
-    expect(manager.findShortcutName).toThrow(/findShortcutName: keyName argument is not defined or falsy./)
-    expect(fn).toThrow(/findShortcutName: componentName argument is not defined or falsy./)
+    expect(manager.findShortcutName).to.throw(/findShortcutName: keyName argument is not defined or falsy./)
+    expect(fn).to.throw(/findShortcutName: componentName argument is not defined or falsy./)

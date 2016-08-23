@@ -1,113 +1,370 @@
+jsdom = require 'jsdom'
+chai = require 'chai'
+sinonChai = require 'sinon-chai'
+sinon = require 'sinon'
+_ = require 'lodash'
+
+
 keymap = require './keymap'
 ShortcutManager = require '../src'
 
 shortcutsManager = new ShortcutManager(keymap)
 
 
-describe 'Shortcuts component: ', ->
+describe 'Shortcuts component', ->
+  baseProps = null
+  baseContext = null
 
+  simulant = null
+  Mousetrap = null
   Shortcuts = null
-  Test = null
-  props = {}
-  spy = null
+  ReactDOM = null
+  React = null
+  enzyme = null
+
+  chai.use(sinonChai)
+  expect = chai.expect
 
   beforeEach ->
-    spy = expect.createSpy()
-    spyFn = (spy) -> spy()
+    global.document = jsdom.jsdom('<html><body></body></html>')
+    global.window = document.defaultView
+    global.Image = window.Image
+    global.navigator = window.navigator
+    global.CustomEvent = window.CustomEvent
+    simulant = require 'simulant'
+    ReactDOM = require 'react-dom'
+    React = require 'react'
+    enzyme = require 'enzyme'
+    chaiEnzyme = require 'chai-enzyme'
 
-    Shortcuts = React.createFactory(require '../src/component')
-    props.name = 'Test'
-    props.handler = ->
+    chai.use(chaiEnzyme())
 
-    Test = React.createClass
-      displayName: 'Test'
+    Shortcuts = require '../src/component'
 
-      childContextTypes:
-        shortcuts: React.PropTypes.object.isRequired
+    baseProps =
+      handler: sinon.spy()
+      name: 'TESTING'
+      className: null
+    baseContext =
+      shortcuts: shortcutsManager
 
-      getChildContext: ->
-        shortcuts: shortcutsManager
+  it 'should render component', ->
+    shortcutComponent = React.createElement(Shortcuts, baseProps)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
 
-      _handleShortcuts: (command) ->
-        switch command
-          when 'MOVE_LEFT' then spyFn(spy)
+    expect(wrapper.find('shortcuts')).to.have.length(1)
 
-      render: ->
-        props.handler = @_handleShortcuts
-        props.name = @constructor.displayName
-        props.ref = 'shortcut'
+  it 'should not have tabIndex attribute by default', ->
+    shortcutComponent = React.createElement(Shortcuts, baseProps)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
 
-        React.DOM.div className: 'root',
-          Shortcuts props,
-            React.DOM.span
-              className: 'child'
-              ref: 'child'
+    expect(wrapper.props().tabIndex).to.be.equal(null)
+
+    props = _.assign {}, baseProps,
+      tabIndex: 42
+    shortcutComponent = React.createElement(Shortcuts, props)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    expect(wrapper.props().tabIndex).to.be.equal(props.tabIndex)
+    realTabIndex = ReactDOM.findDOMNode(wrapper.instance()).getAttribute('tabindex')
+    expect(realTabIndex).to.have.equal(String(props.tabIndex))
+
+  it 'should not have className by default', ->
+    shortcutComponent = React.createElement(Shortcuts, baseProps)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    expect(wrapper.props().className).to.be.equal(null)
+
+  it 'should have className', ->
+    props = _.assign {}, baseProps,
+      className: 'testing'
+    shortcutComponent = React.createElement(Shortcuts, props)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    expect(wrapper.props().className).to.be.equal('testing')
+    expect(wrapper).to.have.className('testing')
+
+  it 'should not have children by default', ->
+    shortcutComponent = React.createElement(Shortcuts, baseProps)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    expect(wrapper.props().children).to.be.equal(undefined)
+
+  it 'should have children', ->
+    props = _.assign {}, baseProps,
+      children: React.DOM.div()
+    shortcutComponent = React.createElement(Shortcuts, props)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    expect(wrapper).to.contain(React.DOM.div())
+
+  it 'should have handler prop', ->
+    shortcutComponent = React.createElement(Shortcuts, baseProps)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    expect(wrapper.props().handler).to.be.function
+
+  it 'should have name prop', ->
+    props = _.assign {}, baseProps,
+      name: 'TESTING'
+    shortcutComponent = React.createElement(Shortcuts, props)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    expect(wrapper.props().name).to.be.equal('TESTING')
+
+  it 'should not have eventType prop by default', ->
+    shortcutComponent = React.createElement(Shortcuts, baseProps)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    expect(wrapper.props().eventType).to.be.equal(null)
+
+  it 'should have eventType prop', ->
+    props = _.assign {}, baseProps,
+      eventType: 'keyUp'
+    shortcutComponent = React.createElement(Shortcuts, props)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    expect(wrapper.props().eventType).to.be.equal('keyUp')
+
+  it 'should have stopPropagation prop by default', ->
+    shortcutComponent = React.createElement(Shortcuts, baseProps)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    expect(wrapper.props().stopPropagation).to.be.equal(true)
+
+  it 'should have stopPropagation prop set to false', ->
+    props = _.assign {}, baseProps,
+      stopPropagation: false
+    shortcutComponent = React.createElement(Shortcuts, props)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    expect(wrapper.props().stopPropagation).to.be.equal(false)
+
+  it 'should have preventDefault prop set to false by default', ->
+    shortcutComponent = React.createElement(Shortcuts, baseProps)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    expect(wrapper.props().preventDefault).to.be.equal(false)
+
+  it 'should have preventDefault prop set to true', ->
+    props = _.assign {}, baseProps,
+      preventDefault: true
+    shortcutComponent = React.createElement(Shortcuts, props)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    expect(wrapper.props().preventDefault).to.be.equal(true)
+
+  it 'should not have targetNode prop by default', ->
+    shortcutComponent = React.createElement(Shortcuts, baseProps)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    expect(wrapper.props().targetNode).to.be.equal(null)
+
+  it 'should have targetNode prop', ->
+    props = _.assign {}, baseProps,
+      targetNode: document.body
+    shortcutComponent = React.createElement(Shortcuts, props)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    expect(wrapper.props().targetNode).to.be.equal(document.body)
+
+  it 'should have global prop set to false by default', ->
+    shortcutComponent = React.createElement(Shortcuts, baseProps)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    expect(wrapper.props().global).to.be.equal(false)
+
+  it 'should have global prop set to true', ->
+    props = _.assign {}, baseProps,
+      global: true
+    shortcutComponent = React.createElement(Shortcuts, props)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    expect(wrapper.props().global).to.be.equal(true)
+
+  it 'should fire the handler prop with the correct argument', ->
+    shortcutComponent = React.createElement(Shortcuts, baseProps)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    node = ReactDOM.findDOMNode(wrapper.instance())
+    node.focus()
+
+    enter = 13
+    simulant.fire(node, 'keydown', { keyCode: enter })
+
+    expect(wrapper.props().handler).to.have.been.calledWith('OPEN')
+
+    esc = 27
+    simulant.fire(node, 'keydown', { keyCode: esc })
+
+    expect(wrapper.props().handler).to.have.been.calledWith('CLOSE')
+
+  it 'should not fire the handler', ->
+    props = _.assign {}, baseProps,
+      name: 'NON-EXISTING'
+    shortcutComponent = React.createElement(Shortcuts, props)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    node = ReactDOM.findDOMNode(wrapper.instance())
+    node.focus()
+
+    enter = 13
+    simulant.fire(node, 'keydown', { keyCode: enter })
+
+    expect(wrapper.props().handler).to.not.have.been.called
+
+  it 'should not fire twice when global prop is truthy', ->
+    props = _.assign {}, baseProps,
+      global: true
+    shortcutComponent = React.createElement(Shortcuts, props)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    node = ReactDOM.findDOMNode(wrapper.instance())
+    node.focus()
+
+    enter = 13
+    simulant.fire(node, 'keydown', { keyCode: enter })
+
+    expect(wrapper.props().handler).to.have.been.calledOnce
+
+  it 'should not fire when the component has been unmounted', ->
+    shortcutComponent = React.createElement(Shortcuts, baseProps)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    node = ReactDOM.findDOMNode(wrapper.instance())
+    node.focus()
+
+    wrapper.unmount()
+
+    enter = 13
+    simulant.fire(node, 'keydown', { keyCode: enter })
+
+    expect(wrapper.props().handler).to.not.have.been.called
+
+  it 'should update the shortcuts and fire the handler', ->
+    shortcutComponent = React.createElement(Shortcuts, baseProps)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    node = ReactDOM.findDOMNode(wrapper.instance())
+    node.focus()
+
+    space = 32
+    simulant.fire(node, 'keydown', { keyCode: space })
+
+    expect(wrapper.props().handler).to.not.have.been.called
+
+    editedKeymap = _.assign {}, keymap,
+      'TESTING':
+        'SPACE': 'space'
+    baseContext.shortcuts.setKeymap(editedKeymap)
+
+    simulant.fire(node, 'keydown', { keyCode: space })
+
+    expect(baseProps.handler).to.have.been.called
+
+    # NOTE: rollback the previous keymap
+    baseContext.shortcuts.setKeymap(keymap)
+
+  it 'should fire the handler from a child input', ->
+    props = _.assign {}, baseProps,
+      children: React.DOM.input({ type: 'text', className: 'input' })
+    shortcutComponent = React.createElement(Shortcuts, props)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    parentNode = ReactDOM.findDOMNode(wrapper.instance())
+    node = parentNode.querySelector('.input')
+    node.focus()
+
+    enter = 13
+    simulant.fire(node, 'keydown', { keyCode: enter, key: 'Enter' })
+
+    expect(wrapper.props().handler).to.have.been.called
 
 
-  it 'should have a displayName', ->
-    element = React.createElement(Shortcuts)
-    expect(element.type(props).type.displayName).toBeA('string')
-    expect(element.type(props).type.displayName).toExist()
+  describe 'Shortcuts component inside Shortcuts component:', ->
 
-  it 'should have a contextTypes', ->
-    element = React.createElement(Shortcuts)
-    expect(element.type(props).type.contextTypes).toExist()
-    expect(element.type(props).type.contextTypes.shortcuts).toExist()
+    it 'should not fire parent handler when child handler is fired', ->
+      props = _.assign {}, baseProps,
+        children: React.createElement Shortcuts, _.assign({}, baseProps, { className: 'test' })
+      shortcutComponent = React.createElement(Shortcuts, props)
+      wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
 
-  it 'should have a propTypes', ->
-    element = React.createElement(Shortcuts)
-    expect(element.type(props).type.propTypes).toExist()
-    expect(element.type(props).type.propTypes.handler).toExist()
-    expect(element.type(props).type.propTypes.name).toExist()
-    expect(element.type(props).type.propTypes.tabIndex).toExist()
-    expect(element.type(props).type.propTypes.eventType).toExist()
-    expect(element.type(props).type.propTypes.isGlobal).toExist()
+      parentNode = ReactDOM.findDOMNode(wrapper.instance())
+      node = parentNode.querySelector('.test')
 
+      node.focus()
 
-  it 'should default the eventType property to null', ->
-    element = React.createElement(Shortcuts)
-    expect(element.type(props).type.getDefaultProps().eventType).toBe(null)
+      enter = 13
+      simulant.fire(node, 'keydown', { keyCode: enter })
 
+      expect(baseProps.handler).to.have.been.calledOnce
 
-  describe 'Rendered element into document', ->
-    element = null
+    it 'should fire parent handler when child handler is fired', ->
+      props = _.assign {}, baseProps,
+        children: React.createElement Shortcuts, _.assign({}, baseProps, { className: 'test', stopPropagation: false })
+      shortcutComponent = React.createElement(Shortcuts, props)
+      wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
 
-    before ->
-      props.className = 'testing-class'
-      element = ReactTestUtils.renderIntoDocument React.createElement(Test)
+      parentNode = ReactDOM.findDOMNode(wrapper.instance())
+      node = parentNode.querySelector('.test')
 
-    it 'should create a <shortcuts> DOM element', ->
-      expect(ReactDOM.findDOMNode(element).querySelector('shortcuts')).toExist()
+      node.focus()
 
-    it 'should add a tabindex attribute to the <shortcuts> element', ->
-      el = ReactDOM.findDOMNode(element).querySelector('shortcuts')
-      expect(el.getAttribute('tabindex')).toExist()
-      expect(el.getAttribute('tabindex')).toBe('-1')
+      enter = 13
+      simulant.fire(node, 'keydown', { keyCode: enter })
 
-    it 'should add a className to the <shortcuts> element', ->
-      el = ReactDOM.findDOMNode(element).querySelector('shortcuts')
-      expect(el.className).toBe('testing-class')
+      expect(baseProps.handler).to.have.been.calledTwice
 
-    it 'should use a custom tabindex attribute value', ->
-      props.tabIndex = 666
-      element = ReactTestUtils.renderIntoDocument React.createElement(Test)
-      el = ReactDOM.findDOMNode(element).querySelector('.testing-class')
-      expect(el.getAttribute('tabindex')).toBe('666')
+    it 'should fire parent handler when parent handler has global prop', ->
+      props = _.assign {}, baseProps,
+        children: React.createElement Shortcuts, _.assign({}, baseProps, { className: 'test' })
+        global: true
+      shortcutComponent = React.createElement(Shortcuts, props)
+      wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
 
-    it 'should render its children as the children of the <shortcuts> element', ->
-      el = ReactDOM.findDOMNode(element).querySelector('.child')
-      expect(el).toExist()
+      parentNode = ReactDOM.findDOMNode(wrapper.instance())
+      node = parentNode.querySelector('.test')
 
-    it 'should fire shortcuts handler', ->
-      obj =
-        preventDefault: ->
-        stopPropagation: ->
-      el = element.refs.shortcut._handleShortcuts(obj, 'left')
-      expect(spy).toHaveBeenCalled()
+      node.focus()
 
-    it 'should add tabIndex attr on targetNode', ->
-      props.targetNode = document.querySelector('body')
-      props.tabIndex = 123
-      element = ReactDOM.render(React.createElement(Test), document.body)
+      enter = 13
+      simulant.fire(node, 'keydown', { keyCode: enter })
 
-      expect(document.body.getAttribute('tabindex')).toBe('123')
+      expect(baseProps.handler).to.have.been.calledTwice
+
+    it 'should fire parent handler but not the child handler', ->
+      props = _.assign {}, baseProps,
+        children: React.createElement Shortcuts, _.assign({}, baseProps, { name: 'NON-EXISTING', className: 'test' })
+        global: true
+      shortcutComponent = React.createElement(Shortcuts, props)
+      wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+      parentNode = ReactDOM.findDOMNode(wrapper.instance())
+      node = parentNode.querySelector('.test')
+
+      node.focus()
+
+      enter = 13
+      simulant.fire(node, 'keydown', { keyCode: enter })
+
+      expect(baseProps.handler).to.have.been.calledOnce
+
+    it 'should fire for all global components', ->
+      props = _.assign {}, baseProps,
+        children: React.createElement Shortcuts, _.assign({}, baseProps, {
+          global: true
+          children: React.createElement Shortcuts, _.assign({}, baseProps, { name: 'NON-EXISTING', className: 'test' })
+        })
+        global: true
+      shortcutComponent = React.createElement(Shortcuts, props)
+      wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+      parentNode = ReactDOM.findDOMNode(wrapper.instance())
+      node = parentNode.querySelector('.test')
+
+      node.focus()
+
+      enter = 13
+      simulant.fire(node, 'keydown', { keyCode: enter })
+
+      expect(baseProps.handler).to.have.been.calledTwice

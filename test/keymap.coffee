@@ -14,3 +14,7 @@ module.exports =
       osx: ['esc', 'enter']
       windows: ['esc', 'enter']
       linux: ['esc', 'enter']
+  'TESTING':
+    'OPEN': 'enter'
+    'CLOSE': 'esc'
+  'NON-EXISTING': {}
