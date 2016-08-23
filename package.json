@@ -24,15 +24,14 @@
     "fast-test": "mocha"
   },
   "dependencies": {
-    "classnames": "^2.1.3",
+    "combokeys": "^2.4.6",
     "events": "^1.0.2",
     "invariant": "^2.1.0",
-    "mousetrap": "^1.5.3",
     "platform": "^1.3.0"
   },
   "peerDependencies": {
-    "react": "^0.14.3",
-    "react-dom": "^0.14.3"
+    "react": "^0.14.8 || ^15",
+    "react-dom": "^0.14.8 || ^15"
   },
   "repository": {
     "type": "git",
@@ -43,20 +42,26 @@
     "url": "http://github.com/avocode/react-shortcuts/issues"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-enzyme": "^0.5.0",
+    "cheerio": "^0.20.0",
     "coffee-coverage": "^0.6.3",
     "coffee-lint-loader": "0.0.1",
     "coffee-loader": "^0.7.2",
     "coffee-script": "^1.9.3",
     "css-loader": "^0.15.6",
-    "expect": "^1.9.0",
+    "enzyme": "^2.4.1",
     "istanbul": "^0.3.18",
     "jsdom": "^8.0.4",
     "less": "^2.5.1",
     "less-loader": "^2.2.0",
     "lodash": "^4.7.0",
     "mocha": "^2.2.5",
-    "react": "^0.14.3",
-    "react-dom": "^0.14.3",
+    "react": "^0.14.8 || ^15",
+    "react-dom": "^0.14.8 || ^15",
+    "simulant": "^0.2.2",
+    "sinon": "^1.17.5",
+    "sinon-chai": "^2.8.0",
     "style-loader": "^0.12.3",
     "webpack": "^1.11.0",
     "webpack-dev-server": "^1.10.1"
