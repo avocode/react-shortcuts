@@ -1,7 +1,7 @@
 React = require 'react'
 ReactDOM = require 'react-dom'
 invariant = require 'invariant'
-createMousetrap = require 'mousetrap'
+Combokeys = require 'combokeys'
 
 shortcuts = React.createFactory 'shortcuts'
 
@@ -9,8 +9,8 @@ shortcuts = React.createFactory 'shortcuts'
 module.exports = React.createClass
   displayName: 'Shortcuts'
 
-  # NOTE: mousetrap must be instance per component
-  _mousetrap: null
+  # NOTE: combokeys must be instance per component
+  _combokeys: null
 
   contextTypes:
     shortcuts: React.PropTypes.object.isRequired
@@ -23,78 +23,88 @@ module.exports = React.createClass
     eventType: React.PropTypes.string
     stopPropagation: React.PropTypes.bool
     preventDefault: React.PropTypes.bool
-    targetNode: React.PropTypes.object
-    ref: React.PropTypes.string
-    isGlobal: React.PropTypes.bool
+    targetNodeSelector: React.PropTypes.string
+    global: React.PropTypes.bool
 
   getDefaultProps: ->
     tabIndex: null
     className: null
-    ref: null
     eventType: null
     stopPropagation: true
     preventDefault: false
-    targetNode: null
-    isGlobal: false
+    targetNodeSelector: null
+    global: false
 
   _bindShortcuts: (shortcutsArr) ->
     element = @_getElementToBind()
     element.setAttribute('tabindex', @props.tabIndex or -1)
-    @_mousetrap = createMousetrap(element)
-    @_monkeyPatchMousetrap()
-    @_mousetrap.bind(shortcutsArr, @_handleShortcuts, @props.eventType)
+    @_combokeys = new Combokeys(element)
+    @_decorateCombokeys()
+    @_combokeys.bind(shortcutsArr, @_handleShortcuts, @props.eventType)
 
-    if @props.isGlobal
+    if @props.global
       element.addEventListener 'shortcuts:global', @_customGlobalHandler
 
   _customGlobalHandler: (e) ->
-    {character, modifiers, event} = e.detail
+    { character, modifiers, event } = e.detail
+
+    targetNode = null
+    if @props.targetNodeSelector
+      targetNode = document.querySelector(@props.targetNodeSelector)
 
     if e.target isnt ReactDOM.findDOMNode(this) and
-        e.target isnt @props.targetNode
-      # NOTE: this is kind of hack
-      @_mousetrap._handleKey(character, modifiers, event, true)
+        e.target isnt targetNode
+      @_combokeys.handleKey(character, modifiers, event, true)
 
-  _lastEvent: null
-
-  _monkeyPatchMousetrap: ->
+  _decorateCombokeys: ->
     element = @_getElementToBind()
-    originalHandleKey = @_mousetrap._handleKey
+    originalHandleKey = @_combokeys.handleKey.bind(@_combokeys)
 
-    @_mousetrap._handleKey = (character, modifiers, event, customEvent) =>
+    # NOTE: stopCallback is a method that is called to see
+    # if the keyboard event should fire
+    @_combokeys.stopCallback = (event, element, combo) ->
+      isInputLikeElement = element.tagName == 'INPUT' or
+        element.tagName == 'SELECT' or element.tagName == 'TEXTAREA' or
+          (element.contentEditable and element.contentEditable == 'true')
+      isReturnString = event.key?.length == 1
+
+      if isInputLikeElement and isReturnString
+        return true
+
+      return false
+
+    @_combokeys.handleKey = (character, modifiers, event, customEvent) =>
       if not customEvent
         element.dispatchEvent new CustomEvent 'shortcuts:global',
           detail: {character, modifiers, event}
           bubbles: true
           cancelable: true
 
-        return null if @_lastEvent is event
-
-      @_lastEvent = event
       event.preventDefault() if @props.preventDefault
       event.stopPropagation() if @props.stopPropagation and not customEvent
+
       originalHandleKey(character, modifiers, event)
 
   _getElementToBind: ->
-    if @props.targetNode
-      element = @props.targetNode
+    if @props.targetNodeSelector
+      element = document.querySelector(@props.targetNodeSelector)
+      invariant(element, "Node selector '#{@props.targetNodeSelector}'  was not found.")
     else
       element = ReactDOM.findDOMNode(this)
 
-    invariant(element, 'TargetNode was not found.')
     return element
 
-  _unbindShortcuts: (shortcutsArr) ->
+  _unbindShortcuts: ->
     element = @_getElementToBind()
     element.removeAttribute('tabindex')
 
-    if @_mousetrap
-      @_mousetrap.unbind(shortcutsArr, @props.eventType)
-      @_mousetrap.reset()
+    if @_combokeys
+      @_combokeys.detach()
+      @_combokeys.reset()
 
   _onUpdate: ->
     shortcutsArr = @context.shortcuts.getShortcuts(@props.name)
-    @_unbindShortcuts(shortcutsArr)
+    @_unbindShortcuts()
     @_bindShortcuts(shortcutsArr)
 
   componentDidMount: ->
@@ -105,9 +115,8 @@ module.exports = React.createClass
     shortcutsArr = @context.shortcuts.getShortcuts(@props.name)
     @_unbindShortcuts(shortcutsArr)
     @context.shortcuts.removeUpdateListener(@_onUpdate)
-    @_lastEvent = null
 
-    if @props.isGlobal
+    if @props.global
       element = @_getElementToBind()
       element.removeEventListener 'shortcuts:global', @_customGlobalHandler
 
@@ -116,11 +125,8 @@ module.exports = React.createClass
     @props.handler(shortcutName, event)
 
   render: ->
-    element = shortcuts
-
-    element
+    shortcuts
       tabIndex: @props.tabIndex or -1
-      ref: @props.ref
       className: @props.className,
 
       @props.children
