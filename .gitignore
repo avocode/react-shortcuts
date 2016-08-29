@@ -1,10 +1,10 @@
 # OS garbage
 .DS_Store
 Thumbs.db
-*.js
 
 # built sources
 dist/
+lib/
 
 # npm stuff
 node_modules/

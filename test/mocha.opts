@@ -1,3 +1,2 @@
---compilers coffee:coffee-script/register
---require coffee-coverage/register-istanbul
+--compilers js:babel-core/register
 --recursive
