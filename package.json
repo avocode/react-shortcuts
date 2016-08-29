@@ -58,6 +58,7 @@
     "lodash": "^4.7.0",
     "mocha": "^2.2.5",
     "react": "^0.14.8 || ^15",
+    "react-addons-test-utils": "^0.14.8 || ^15",
     "react-dom": "^0.14.8 || ^15",
     "simulant": "^0.2.2",
     "sinon": "^1.17.5",
