@@ -9,6 +9,8 @@ let getPlatformName = function() {
     os = 'osx'
   } else if (/freebsd|sunos/.test(os)) {
     os = 'linux'
+  } else {
+    os = 'other'
   }
   return os
 }

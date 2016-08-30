@@ -56,7 +56,8 @@ Create a new JS, Coffee, JSON or CSON file wherever you want (which probably is 
    "Action_3": {
      "osx": "Shortcut",
      "windows": ["Shortcut", "Shortcut"],
-     "linux": "Shortcut"
+     "linux": "Shortcut",
+     "other": "Shortcut",
    }
  }
 }
@@ -65,7 +66,7 @@ Create a new JS, Coffee, JSON or CSON file wherever you want (which probably is 
 - `Namespace` should ideally be the component’s `displayName`.
 - `Action` describes what will be happening. For example `MODAL_CLOSE`.
 - `Keyboard shortcut` can be a string, array of strings or an object which
-  specifies platform differences (Windows, OSX, Linux). The
+  specifies platform differences (Windows, OSX, Linux, other). The
   shortcut may be composed of single keys (`a`, `6`,…), combinations
   (`command+shift+k`) or sequences (`up up down down left right left right B A`).
 
@@ -87,6 +88,7 @@ module.exports =
       osx: 'command+c'
       windows: 'ctrl+c'
       linux: 'ctrl+c'
+      other: 'ctrl+c'
 ```
 
 Save this file as `keymap.[js|coffee|json|cson]` and require it into your main
