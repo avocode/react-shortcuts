@@ -70,7 +70,7 @@ Create a new JS, Coffee, JSON or CSON file wherever you want (which probably is 
   shortcut may be composed of single keys (`a`, `6`,…), combinations
   (`command+shift+k`) or sequences (`up up down down left right left right B A`).
 
-> **Mousetrap** is used under the
+> **Combokeys** is used under the
   hood for handling the shortcuts. [Read more][mousetrap] about how you can
   specify keys.
 
@@ -106,13 +106,13 @@ about the situation.
 
 ```
 keymap = require './keymap'
-ShortcutsManager = require 'react-shortcuts'
+{ ShortcutManager } = require 'react-shortcuts'
 
-shortcutManager = new ShortcutsManager(keymap)
+shortcutManager = new ShortcutManager(keymap)
 
 # Or like this
 
-shortcutManager = new ShortcutsManager()
+shortcutManager = new ShortcutManager()
 shortcutManager.setKeymap(keymap)
 
 ```
@@ -137,7 +137,7 @@ You need to require the component in the file you want to use shortcuts in.
 For example `<TodoItem>`.
 
 ```
-Shortcuts = require `react-shortcuts/component`
+{ Shortcuts } = require `react-shortcuts`
 
 TodoItem = React.createClass
   displayName: 'TodoItem'

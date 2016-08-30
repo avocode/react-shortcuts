@@ -1,1 +1,4 @@
-module.exports = require('./shortcut-manager')
+module.exports = {
+  ShortcutManager: require('./shortcut-manager'),
+  Shortcuts: require('./component/'),
+}

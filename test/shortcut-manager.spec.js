@@ -1,16 +1,28 @@
+import jsdom from 'jsdom'
 import chai from 'chai'
 import _ from 'lodash'
 import sinonChai from 'sinon-chai'
 import sinon from 'sinon'
 
 import keymap from './keymap'
-import ShortcutManager from '../src'
 
 chai.use(sinonChai)
 
 let { expect } = chai
 
-describe('Shortcut manager: ', function() {
+describe('Shortcut manager', function() {
+  let ShortcutManager = null
+
+  before(() => {
+    global.document = jsdom.jsdom('<html><body></body></html>')
+    global.window = document.defaultView
+    global.Image = window.Image
+    global.navigator = window.navigator
+    global.CustomEvent = window.CustomEvent
+
+    ShortcutManager = require('../src').ShortcutManager
+  })
+
   it('should return empty object when calling empty constructor', function() {
     let manager = new ShortcutManager()
     expect(manager.getAllShortcuts()).to.be.empty

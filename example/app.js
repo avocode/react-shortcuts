@@ -1,4 +1,6 @@
-let Shortcuts = React.createFactory(require('../src/component'))
+let { Shortcuts } = require('../src')
+
+Shortcuts = React.createFactory(Shortcuts)
 let { div, h1, p } = React.DOM
 
 export default React.createClass({

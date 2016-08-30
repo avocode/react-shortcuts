@@ -4,12 +4,7 @@ import sinonChai from 'sinon-chai'
 import sinon from 'sinon'
 import _ from 'lodash'
 
-
 import keymap from './keymap'
-import ShortcutManager from '../src'
-
-let shortcutsManager = new ShortcutManager(keymap)
-
 
 describe('Shortcuts component', function() {
   let baseProps = null
@@ -17,6 +12,7 @@ describe('Shortcuts component', function() {
 
   let simulant = null
   let Mousetrap = null
+  let ShortcutManager = null
   let Shortcuts = null
   let ReactDOM = null
   let React = null
@@ -39,7 +35,10 @@ describe('Shortcuts component', function() {
 
     chai.use(chaiEnzyme())
 
-    Shortcuts = require('../src/component')
+    ShortcutManager = require('../src').ShortcutManager
+    let shortcutsManager = new ShortcutManager(keymap)
+    
+    Shortcuts = require('../src/').Shortcuts
 
     baseProps = {
       handler: sinon.spy(),
