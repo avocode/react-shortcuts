@@ -57,7 +57,7 @@ Create a new JS, Coffee, JSON or CSON file wherever you want (which probably is 
      "osx": "Shortcut",
      "windows": ["Shortcut", "Shortcut"],
      "linux": "Shortcut",
-     "other": "Shortcut",
+     "other": "Shortcut"
    }
  }
 }
