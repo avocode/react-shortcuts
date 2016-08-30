@@ -6,7 +6,8 @@ export default {
     DELETE: {
       osx: 'alt+backspace',
       windows: 'delete',
-      linux: 'alt+backspace'
+      linux: 'alt+backspace',
+      other: 'alt+backspace'
     }
   },
   Next: {
@@ -15,7 +16,8 @@ export default {
     CLOSE: {
       osx: ['esc', 'enter'],
       windows: ['esc', 'enter'],
-      linux: ['esc', 'enter']
+      linux: ['esc', 'enter'],
+      other: ['esc', 'enter']
     }
   },
   'TESTING': {
