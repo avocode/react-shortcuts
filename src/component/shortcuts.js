@@ -38,6 +38,8 @@ export default class extends React.Component {
   // NOTE: combokeys must be instance per component
   _combokeys = null
 
+  _lastEventTimestamp = null
+
   _bindShortcuts = (shortcutsArr) => {
     let element = this._getElementToBind()
     element.setAttribute('tabindex', this.props.tabIndex || -1)
@@ -57,6 +59,10 @@ export default class extends React.Component {
     if (this.props.targetNodeSelector) {
       targetNode = document.querySelector(this.props.targetNodeSelector)
     }
+
+    if (event.timeStamp === this._lastTimestamp) { return }
+
+    this._lastTimestamp = event.timeStamp
 
     if (e.target !== ReactDOM.findDOMNode(this) && e.target !== targetNode) {
       this._combokeys.handleKey(character, modifiers, event, true)
