@@ -60,10 +60,6 @@ export default class extends React.Component {
       targetNode = document.querySelector(this.props.targetNodeSelector)
     }
 
-    if (event.timeStamp === this._lastTimestamp) { return }
-
-    this._lastTimestamp = event.timeStamp
-
     if (e.target !== ReactDOM.findDOMNode(this) && e.target !== targetNode) {
       this._combokeys.handleKey(character, modifiers, event, true)
     }
@@ -88,8 +84,11 @@ export default class extends React.Component {
       return false
     }
 
-    this._combokeys.handleKey = (character, modifiers, event, customEvent) => {
-      if (!customEvent) {
+    this._combokeys.handleKey = (character, modifiers, event, isGlobalHandler) => {
+      if (event.timeStamp === this._lastTimestamp) { return }
+      this._lastTimestamp = event.timeStamp
+
+      if (!isGlobalHandler) {
         element.dispatchEvent(new CustomEvent('shortcuts:global', {
           detail: {character, modifiers, event},
           bubbles: true,
@@ -97,19 +96,42 @@ export default class extends React.Component {
         }))
       }
 
-      if (this.props.preventDefault) { event.preventDefault() }
-      if (this.props.stopPropagation && !customEvent) { event.stopPropagation() }
+      // NOTE: works normally if it's not a React event
+      if (!this._isReactEvent(event)) {
+        if (this.props.preventDefault) { event.preventDefault() }
+        if (this.props.stopPropagation && !isGlobalHandler) { event.stopPropagation() }
+        originalHandleKey(character, modifiers, event)
+        return
+      }
 
-      originalHandleKey(character, modifiers, event)
+      // NOTE: global shortcuts should work even if it's a React event
+      if (this.props.global) {
+        originalHandleKey(character, modifiers, event)
+      }
     }
   }
 
+  _isReactEvent = (event) => {
+    let result = false
+    if (event && event.target && event.target._reactInternalComponent
+        && event.target._reactInternalComponent._currentElement
+        && event.target._reactInternalComponent._currentElement.props) {
+      const props = event.target._reactInternalComponent._currentElement.props
+
+      if (props.onKeyDown || props.onKeyPress || props.onKeyUp) {
+        result = true
+      }
+    }
+    return result
+  }
+
   _getElementToBind = () => {
+    let element = null
     if (this.props.targetNodeSelector) {
-      var element = document.querySelector(this.props.targetNodeSelector)
+      element = document.querySelector(this.props.targetNodeSelector)
       invariant(element, `Node selector '${this.props.targetNodeSelector}'  was not found.`)
     } else {
-      var element = ReactDOM.findDOMNode(this)
+      element = ReactDOM.findDOMNode(this)
     }
 
     return element
