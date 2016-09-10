@@ -38,7 +38,7 @@ export default class extends React.Component {
   // NOTE: combokeys must be instance per component
   _combokeys = null
 
-  _lastEventTimestamp = null
+  _lastEvent = null
 
   _bindShortcuts = (shortcutsArr) => {
     let element = this._getElementToBind()
@@ -85,8 +85,8 @@ export default class extends React.Component {
     }
 
     this._combokeys.handleKey = (character, modifiers, event, isGlobalHandler) => {
-      if (event.timeStamp === this._lastTimestamp) { return }
-      this._lastTimestamp = event.timeStamp
+      if (this._lastEvent && event.timeStamp === this._lastEvent.timeStamp && event.type === this._lastEvent.type) { return }
+      this._lastEvent = event
 
       if (!isGlobalHandler) {
         element.dispatchEvent(new CustomEvent('shortcuts:global', {
