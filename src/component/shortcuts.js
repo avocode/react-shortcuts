@@ -14,15 +14,16 @@ export default class extends React.Component {
   }
 
   static propTypes = {
-    handler: React.PropTypes.func.isRequired,
-    name: React.PropTypes.string.isRequired,
+    handler: React.PropTypes.func,
+    name: React.PropTypes.string,
     tabIndex: React.PropTypes.number,
     className: React.PropTypes.string,
     eventType: React.PropTypes.string,
     stopPropagation: React.PropTypes.bool,
     preventDefault: React.PropTypes.bool,
     targetNodeSelector: React.PropTypes.string,
-    global: React.PropTypes.bool
+    global: React.PropTypes.bool,
+    isolate: React.PropTypes.bool
   }
 
   static defaultProps = {
@@ -32,7 +33,8 @@ export default class extends React.Component {
     stopPropagation: true,
     preventDefault: false,
     targetNodeSelector: null,
-    global: false
+    global: false,
+    isolate: false
   }
 
   // NOTE: combokeys must be instance per component
@@ -88,6 +90,10 @@ export default class extends React.Component {
       if (this._lastEvent && event.timeStamp === this._lastEvent.timeStamp && event.type === this._lastEvent.type) { return }
       this._lastEvent = event
 
+      if (this.props.isolate) {
+        event.__isolateShortcuts = true
+      }
+
       if (!isGlobalHandler) {
         element.dispatchEvent(new CustomEvent('shortcuts:global', {
           detail: {character, modifiers, event},
@@ -96,33 +102,19 @@ export default class extends React.Component {
         }))
       }
 
-      // NOTE: works normally if it's not a React event
-      if (!this._isReactEvent(event)) {
+      // NOTE: works normally if it's not an isolated event
+      if (!event.__isolateShortcuts) {
         if (this.props.preventDefault) { event.preventDefault() }
         if (this.props.stopPropagation && !isGlobalHandler) { event.stopPropagation() }
         originalHandleKey(character, modifiers, event)
         return
       }
 
-      // NOTE: global shortcuts should work even if it's a React event
+      // NOTE: global shortcuts should work even for isolated event
       if (this.props.global) {
         originalHandleKey(character, modifiers, event)
       }
     }
-  }
-
-  _isReactEvent = (event) => {
-    let result = false
-    if (event && event.target && event.target._reactInternalComponent
-        && event.target._reactInternalComponent._currentElement
-        && event.target._reactInternalComponent._currentElement.props) {
-      const props = event.target._reactInternalComponent._currentElement.props
-
-      if (props.onKeyDown || props.onKeyPress || props.onKeyUp) {
-        result = true
-      }
-    }
-    return result
   }
 
   _getElementToBind = () => {
@@ -148,20 +140,25 @@ export default class extends React.Component {
   }
 
   _onUpdate = () => {
-    let shortcutsArr = this.context.shortcuts.getShortcuts(this.props.name)
+    let shortcutsArr = this.props.name && this.context.shortcuts.getShortcuts(this.props.name)
     this._unbindShortcuts()
-    this._bindShortcuts(shortcutsArr)
+    this._bindShortcuts(shortcutsArr || [])
   }
 
   componentDidMount() {
     this._onUpdate()
-    this.context.shortcuts.addUpdateListener(this._onUpdate)
+
+    if (this.props.name) {
+      this.context.shortcuts.addUpdateListener(this._onUpdate)
+    }
   }
 
   componentWillUnmount() {
-    let shortcutsArr = this.context.shortcuts.getShortcuts(this.props.name)
-    this._unbindShortcuts(shortcutsArr)
-    this.context.shortcuts.removeUpdateListener(this._onUpdate)
+    this._unbindShortcuts()
+
+    if (this.props.name) {
+      this.context.shortcuts.removeUpdateListener(this._onUpdate)
+    }
 
     if (this.props.global) {
       let element = this._getElementToBind()
@@ -170,8 +167,13 @@ export default class extends React.Component {
   }
 
   _handleShortcuts = (event, keyName) => {
-    let shortcutName = this.context.shortcuts.findShortcutName(keyName, this.props.name)
-    this.props.handler(shortcutName, event)
+    if (this.props.name) {
+      let shortcutName = this.context.shortcuts.findShortcutName(keyName, this.props.name)
+
+      if (this.props.handler) {
+        this.props.handler(shortcutName, event)
+      }
+    }
   }
 
   render() {

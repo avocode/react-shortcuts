@@ -5,9 +5,9 @@ let getPlatformName = function() {
   os = os.toLowerCase().replace(/ /g, '')
   if (/\bwin/.test(os)) {
     os = 'windows'
-  } else if (/darwin/.test(os)) {
+  } else if (/darwin|osx/.test(os)) {
     os = 'osx'
-  } else if (/freebsd|sunos/.test(os)) {
+  } else if (/freebsd|sunos|ubuntu|debian|fedora|redhat|suse/.test(os)) {
     os = 'linux'
   } else {
     os = 'other'

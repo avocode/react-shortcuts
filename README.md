@@ -168,13 +168,15 @@ TodoItem = React.createClass
 
 ## Custom props for `<Shortcuts>` component
 
-- `handler`: func.isRequired
-- `name`: string.isRequired
+- `handler`: func
+  - callback function that will fire when a shortcut occurs
+- `name`: string
+  - The name of the namespace specified in keymap file
 - `tabIndex`: number
   - Default is `-1`
 - `className`: string
 - `eventType`: string
-  - Just for gourmets
+  - Just for gourmets (keyup, keydown, keypress)
 - `stopPropagation`: bool
 - `preventDefault`: bool
 - `targetNodeSelector`: DOM Node Selector like `body` or `.my-class`
@@ -182,6 +184,8 @@ TodoItem = React.createClass
   of the component.
 - `global`: bool
   - Use this when you have some global app wide shortcuts like `CMD+Q`.
+- `isolate`: bool
+  - Use this when a child component has React's key handler (onKeyUp, onKeyPress, onKeyDown). Otherwise, React Shortcuts stops propagation of that event due to nature of event delegation that React uses internally.
 
 
 ## Thanks, Atom
