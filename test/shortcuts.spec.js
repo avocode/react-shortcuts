@@ -439,8 +439,13 @@ describe('Shortcuts component', () => {
     })
 
     it('should not fire parent handler when a child has isolate prop set to true', () => {
+      let childHandlerSpy = sinon.spy()
       let props = _.assign({}, baseProps, {
-        children: React.createElement(Shortcuts, _.assign({}, baseProps, { className: 'test', isolate: true }))
+        children: React.createElement(Shortcuts, _.assign({}, baseProps, {
+          className: 'test',
+          isolate: true,
+          handler: childHandlerSpy
+        }))
       })
 
       let shortcutComponent = React.createElement(Shortcuts, props)
@@ -454,6 +459,7 @@ describe('Shortcuts component', () => {
       let enter = 13
       simulant.fire(node, 'keydown', { keyCode: enter })
 
+      expect(childHandlerSpy).to.have.been.called
       expect(baseProps.handler).to.not.have.been.called
     })
 

@@ -110,8 +110,8 @@ export default class extends React.Component {
         return
       }
 
-      // NOTE: global shortcuts should work even for isolated event
-      if (this.props.global) {
+      // NOTE: global shortcuts should work even for an isolated event
+      if (this.props.global || this.props.isolate) {
         originalHandleKey(character, modifiers, event)
       }
     }
