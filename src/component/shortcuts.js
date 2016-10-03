@@ -130,9 +130,6 @@ export default class extends React.Component {
   }
 
   _unbindShortcuts = () => {
-    let element = this._getElementToBind()
-    element.removeAttribute('tabindex')
-
     if (this._combokeys) {
       this._combokeys.detach()
       this._combokeys.reset()
