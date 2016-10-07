@@ -51,7 +51,7 @@ class ShortcutManager extends EventEmitter {
       `getShortcuts: There are no shortcuts with name ${componentName}.`)
 
     let _parseShortcutDescriptor = this._parseShortcutDescriptor.bind(this)
-    let shortcuts = _(cursor).map(_parseShortcutDescriptor).flatten().value()
+    let shortcuts = _(cursor).map(_parseShortcutDescriptor).flatten().compact().value()
 
     return shortcuts
   }
