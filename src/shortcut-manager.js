@@ -3,6 +3,13 @@ import invariant from 'invariant'
 import { EventEmitter } from 'events'
 import helpers from './helpers'
 
+
+const warning = (text) => {
+  if (process.env.NODE_ENV !== 'production') {
+    console.warn(text)
+  }
+}
+
 class ShortcutManager extends EventEmitter {
   static CHANGE_EVENT = 'shortcuts:update'
 
@@ -47,8 +54,10 @@ class ShortcutManager extends EventEmitter {
       'getShortcuts: name argument is not defined or falsy.')
 
     let cursor = this._keymap[componentName]
-    invariant(cursor,
-      `getShortcuts: There are no shortcuts with name ${componentName}.`)
+    if (!cursor) {
+      warning(`getShortcuts: There are no shortcuts with name ${componentName}.`)
+      return
+    }
 
     let _parseShortcutDescriptor = this._parseShortcutDescriptor.bind(this)
     let shortcuts = _(cursor).map(_parseShortcutDescriptor).flatten().compact().value()
