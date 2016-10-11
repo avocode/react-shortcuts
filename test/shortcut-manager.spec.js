@@ -78,10 +78,10 @@ describe('Shortcut manager', function() {
     expect(shortcuts.length).to.be.equal(5)
   })
 
-  it('should throw an error', function() {
+  it('should not throw an error when getting not existing key from keymap', function() {
     let manager = new ShortcutManager(keymap)
     let notExist = () => manager.getShortcuts('NotExist')
-    expect(notExist).to.throw(/getShortcuts: There are no shortcuts with name NotExist./)
+    expect(notExist).to.not.throw()
   })
 
   it('findShortcutName: should return correct key label', function() {
