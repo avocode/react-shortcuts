@@ -74,8 +74,9 @@ export default class extends React.Component {
     // NOTE: stopCallback is a method that is called to see
     // if the keyboard event should fire
     this._combokeys.stopCallback = function(event, element, combo) {
-      let isInputLikeElement = element.tagName === 'INPUT' ||
-        element.tagName === 'SELECT' || element.tagName === 'TEXTAREA' ||
+      const tagName = element.tagName.toUpperCase() // needed for Safari
+      let isInputLikeElement = tagName === 'INPUT' ||
+        tagName === 'SELECT' || tagName === 'TEXTAREA' ||
           (element.contentEditable && element.contentEditable === 'true')
       let isReturnString = event.key && event.key.length === 1
 
