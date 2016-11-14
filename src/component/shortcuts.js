@@ -77,8 +77,13 @@ export default class extends React.Component {
       let isInputLikeElement = element.tagName === 'INPUT' ||
         element.tagName === 'SELECT' || element.tagName === 'TEXTAREA' ||
           (element.contentEditable && element.contentEditable === 'true')
-      let isReturnString = event.key && event.key.length === 1
-
+        var isReturnString;
+        if (event.key !== undefined) {
+          isReturnString = event.key && event.key.length === 1;
+        } else { // safari doesn't support KeyboardEvent.key
+          isReturnString = (typeof event.which == "number") ? event.which : event.keyCode
+        }
+      
       if (isInputLikeElement && isReturnString) {
         return true
       }
