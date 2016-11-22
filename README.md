@@ -75,27 +75,30 @@ Create a new JS, Coffee, JSON or CSON file wherever you want (which probably is 
   specify keys.
 
 
-##### Example `keymap` definition (in CoffeeScript):
+##### Example `keymap` definition:
 
 
 ```
-module.exports =
-  TodoItem:
-    MOVE_LEFT: 'left'
-    MOVE_RIGHT: 'right'
-    MOVE_UP: ['up', 'w']
-    COPY:
-      osx: 'command+c'
-      windows: 'ctrl+c'
-      linux: 'ctrl+c'
-      other: 'ctrl+c'
+export default {
+  TODO_ITEM: {
+    MOVE_LEFT: 'left',
+    MOVE_RIGHT: 'right',
+    MOVE_UP: ['up', 'w'],
+    DELETE: {
+      osx: ['command+backspace', 'k'],
+      windows: 'delete',
+      linux: 'delete',
+    },
+  },
+}
+
 ```
 
 Save this file as `keymap.[js|coffee|json|cson]` and require it into your main
 file.
 
 ```
-keymap = require './keymap'
+import keymap from './keymap'
 ```
 
 #### 3. Rise of the ShortcutsManager
@@ -105,30 +108,29 @@ object. `ShortcutsManager` can’t parse JSON and will certainly not be happy
 about the situation.
 
 ```
-keymap = require './keymap'
-{ ShortcutManager } = require 'react-shortcuts'
+import keymap from './keymap'
+import { ShortcutManager } from 'react-shortcuts'
 
-shortcutManager = new ShortcutManager(keymap)
+const shortcutManager = new ShortcutManager(keymap)
 
-# Or like this
+// Or like this
 
-shortcutManager = new ShortcutManager()
+const shortcutManager = new ShortcutManager()
 shortcutManager.setKeymap(keymap)
-
 ```
 
 #### 4. Include `shortcutManager` into getChildContext of some parent component. So that `<shortcuts>` can receive it.
 
 ```
-App = React.createClass
-  displayName: 'App'
+class App extends React.Component {
+  getChildContext() {
+    return { shortcuts: shortcutManager }
+  }
+}
 
-  childContextTypes:
-    shortcuts: React.PropTypes.object.isRequired
-
-  getChildContext: ->
-    shortcuts: shortcutManager
-
+App.childContextTypes = {
+  shortcuts: React.PropTypes.object.isRequired
+}
 ```
 
 #### 5. Require the <shortcuts> component
@@ -137,29 +139,37 @@ You need to require the component in the file you want to use shortcuts in.
 For example `<TodoItem>`.
 
 ```
-{ Shortcuts } = require `react-shortcuts`
+import { Shortcuts } from `react-shortcuts`
 
-TodoItem = React.createClass
-  displayName: 'TodoItem'
+class TodoItem extends React.Component {
+  _handleShortcuts = (action, event) => {
+    switch (action) {
+      case 'MOVE_LEFT':
+        console.log('moving left')
+        break
+      case 'MOVE_RIGHT':
+        console.log('moving right')
+        break
+      case 'MOVE_UP':
+        console.log('moving up')
+        break
+      case 'COPY':
+        console.log('copying stuff')
+        break
+    }
+  }
 
-  _handleShortcuts: (action, event) ->
-    switch action
-      when 'MOVE_LEFT' then console.log('moving left')
-      when 'MOVE_RIGHT' then console.log('moving right')
-      when 'MOVE_UP' then console.log('moving up')
-      when 'COPY' then console.log('copying stuff')
-
-  render: ->
-
-      div className: 'todo-item',
-
-      Shortcuts
-        name: @constructor.displayName
-        handler: @_handleShortcuts,
-
-        div null,
-          'Buy some milk'
-
+  render() {
+    return (
+      <Shortcuts
+        name: 'TODO_ITEM',
+        handler: {this._handleShortcuts},
+      >
+        <div>Make something amazing today</div>
+      </Shortcuts>
+    )
+  }
+}
 ```
 
 > The `<Shortcuts>` component creates a `<shortcuts>` element in HTML, binds
