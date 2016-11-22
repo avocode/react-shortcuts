@@ -40,6 +40,54 @@ describe('Shortcut manager', () => {
     expect(manager.getAllShortcuts()).to.be.equal(keymap)
   })
 
+  it('should return all shortcuts for the Windows platform', () => {
+    const manager = new ShortcutManager(keymap)
+    const keyMapResult = {
+      'Test': {
+        MOVE_LEFT: 'left',
+        MOVE_RIGHT: 'right',
+        MOVE_UP: ['up', 'w'],
+        DELETE: 'delete',
+      },
+      'Next': {
+        OPEN: 'alt+o',
+        ABORT: ['d', 'c'],
+        CLOSE: ['esc', 'enter'],
+      },
+      'TESTING': {
+        'OPEN': 'enter',
+        'CLOSE': 'esc',
+      },
+      'NON-EXISTING': {},
+    }
+
+    expect(manager.getAllShortcutsForPlatform('windows')).to.eql(keyMapResult)
+  })
+
+  it('should return all shortcuts for the macOs platform', () => {
+    const manager = new ShortcutManager(keymap)
+    const keyMapResult = {
+      'Test': {
+        MOVE_LEFT: 'left',
+        MOVE_RIGHT: 'right',
+        MOVE_UP: ['up', 'w'],
+        DELETE: 'alt+backspace',
+      },
+      'Next': {
+        OPEN: 'alt+o',
+        ABORT: ['d', 'c'],
+        CLOSE: ['esc', 'enter'],
+      },
+      'TESTING': {
+        'OPEN': 'enter',
+        'CLOSE': 'esc',
+      },
+      'NON-EXISTING': {},
+    }
+
+    expect(manager.getAllShortcutsForPlatform('osx')).to.eql(keyMapResult)
+  })
+
   it('should expose the change event type as a static constant', () =>
     expect(ShortcutManager.CHANGE_EVENT).to.exist
   )
@@ -84,7 +132,7 @@ describe('Shortcut manager', () => {
     expect(notExist).to.not.throw()
   })
 
-  it('findShortcutName: should return correct key label', () => {
+  it('should return correct key label', () => {
     const manager = new ShortcutManager()
     manager.setKeymap(keymap)
 
@@ -103,7 +151,7 @@ describe('Shortcut manager', () => {
     expect(manager.findShortcutName('enter', 'Next')).to.be.equal('CLOSE')
   })
 
-  it('findShortcutName: should throw an error', () => {
+  it('should throw an error', () => {
     const manager = new ShortcutManager()
     const fn = () => manager.findShortcutName('left')
     expect(manager.findShortcutName).to.throw(/findShortcutName: keyName argument is not defined or falsy./)

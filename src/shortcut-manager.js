@@ -48,6 +48,30 @@ class ShortcutManager extends EventEmitter {
     return this._keymap
   }
 
+  getAllShortcutsForPlatform(platformName) {
+    const _transformShortcuts = (shortcuts) => {
+      return _.reduce(shortcuts, (result, keyValue, keyName) => {
+        if (_.isPlainObject(keyValue)) {
+          if (keyValue[platformName]) {
+            keyValue = keyValue[platformName]
+          } else {
+            result[keyName] = _transformShortcuts(keyValue)
+            return result
+          }
+        }
+
+        result[keyName] = keyValue
+        return result
+      }, {})
+    }
+
+    return _transformShortcuts(this._keymap)
+  }
+
+  getAllShortcutsForCurrentPlatform() {
+    return this.getAllShortcutsForPlatform(this._platformName)
+  }
+
   getShortcuts(componentName) {
     invariant(componentName,
       'getShortcuts: name argument is not defined or falsy.')
