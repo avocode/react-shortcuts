@@ -1,19 +1,19 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import invariant from 'invariant'
 import Combokeys from 'combokeys'
 
-let shortcuts = React.createFactory('shortcuts')
+const shortcuts = React.createFactory('shortcuts')
 
 
 export default class extends React.Component {
   static displayName = 'Shortcuts'
 
   static contextTypes = {
-    shortcuts: React.PropTypes.object.isRequired
+    shortcuts: React.PropTypes.object.isRequired,
   }
 
   static propTypes = {
+    children: React.PropTypes.node,
     handler: React.PropTypes.func,
     name: React.PropTypes.string,
     tabIndex: React.PropTypes.number,
@@ -23,7 +23,7 @@ export default class extends React.Component {
     preventDefault: React.PropTypes.bool,
     targetNodeSelector: React.PropTypes.string,
     global: React.PropTypes.bool,
-    isolate: React.PropTypes.bool
+    isolate: React.PropTypes.bool,
   }
 
   static defaultProps = {
@@ -34,7 +34,28 @@ export default class extends React.Component {
     preventDefault: false,
     targetNodeSelector: null,
     global: false,
-    isolate: false
+    isolate: false,
+  }
+
+  componentDidMount() {
+    this._onUpdate()
+
+    if (this.props.name) {
+      this.context.shortcuts.addUpdateListener(this._onUpdate)
+    }
+  }
+
+  componentWillUnmount() {
+    this._unbindShortcuts()
+
+    if (this.props.name) {
+      this.context.shortcuts.removeUpdateListener(this._onUpdate)
+    }
+
+    if (this.props.global) {
+      const element = this._getElementToBind()
+      element.removeEventListener('shortcuts:global', this._customGlobalHandler)
+    }
   }
 
   // NOTE: combokeys must be instance per component
@@ -43,7 +64,7 @@ export default class extends React.Component {
   _lastEvent = null
 
   _bindShortcuts = (shortcutsArr) => {
-    let element = this._getElementToBind()
+    const element = this._getElementToBind()
     element.setAttribute('tabindex', this.props.tabIndex || -1)
     this._combokeys = new Combokeys(element)
     this._decorateCombokeys()
@@ -55,29 +76,29 @@ export default class extends React.Component {
   }
 
   _customGlobalHandler = (e) => {
-    let { character, modifiers, event } = e.detail
+    const { character, modifiers, event } = e.detail
 
     let targetNode = null
     if (this.props.targetNodeSelector) {
       targetNode = document.querySelector(this.props.targetNodeSelector)
     }
 
-    if (e.target !== ReactDOM.findDOMNode(this) && e.target !== targetNode) {
+    if (e.target !== this._domNode && e.target !== targetNode) {
       this._combokeys.handleKey(character, modifiers, event, true)
     }
   }
 
   _decorateCombokeys = () => {
-    let element = this._getElementToBind()
-    let originalHandleKey = this._combokeys.handleKey.bind(this._combokeys)
+    const element = this._getElementToBind()
+    const originalHandleKey = this._combokeys.handleKey.bind(this._combokeys)
 
     // NOTE: stopCallback is a method that is called to see
     // if the keyboard event should fire
-    this._combokeys.stopCallback = function(event, element, combo) {
-      let isInputLikeElement = element.tagName === 'INPUT' ||
-        element.tagName === 'SELECT' || element.tagName === 'TEXTAREA' ||
-          (element.contentEditable && element.contentEditable === 'true')
-      let isReturnString = event.key && event.key.length === 1
+    this._combokeys.stopCallback = (event, domElement, combo) => {
+      const isInputLikeElement = domElement.tagName === 'INPUT' ||
+        domElement.tagName === 'SELECT' || domElement.tagName === 'TEXTAREA' ||
+          (domElement.contentEditable && domElement.contentEditable === 'true')
+      const isReturnString = event.key && event.key.length === 1
 
       if (isInputLikeElement && isReturnString) {
         return true
@@ -96,9 +117,9 @@ export default class extends React.Component {
 
       if (!isGlobalHandler) {
         element.dispatchEvent(new CustomEvent('shortcuts:global', {
-          detail: {character, modifiers, event},
+          detail: { character, modifiers, event },
           bubbles: true,
-          cancelable: true
+          cancelable: true,
         }))
       }
 
@@ -123,7 +144,7 @@ export default class extends React.Component {
       element = document.querySelector(this.props.targetNodeSelector)
       invariant(element, `Node selector '${this.props.targetNodeSelector}'  was not found.`)
     } else {
-      element = ReactDOM.findDOMNode(this)
+      element = this._domNode
     }
 
     return element
@@ -137,35 +158,14 @@ export default class extends React.Component {
   }
 
   _onUpdate = () => {
-    let shortcutsArr = this.props.name && this.context.shortcuts.getShortcuts(this.props.name)
+    const shortcutsArr = this.props.name && this.context.shortcuts.getShortcuts(this.props.name)
     this._unbindShortcuts()
     this._bindShortcuts(shortcutsArr || [])
   }
 
-  componentDidMount() {
-    this._onUpdate()
-
-    if (this.props.name) {
-      this.context.shortcuts.addUpdateListener(this._onUpdate)
-    }
-  }
-
-  componentWillUnmount() {
-    this._unbindShortcuts()
-
-    if (this.props.name) {
-      this.context.shortcuts.removeUpdateListener(this._onUpdate)
-    }
-
-    if (this.props.global) {
-      let element = this._getElementToBind()
-      element.removeEventListener('shortcuts:global', this._customGlobalHandler)
-    }
-  }
-
   _handleShortcuts = (event, keyName) => {
     if (this.props.name) {
-      let shortcutName = this.context.shortcuts.findShortcutName(keyName, this.props.name)
+      const shortcutName = this.context.shortcuts.findShortcutName(keyName, this.props.name)
 
       if (this.props.handler) {
         this.props.handler(shortcutName, event)
@@ -176,8 +176,9 @@ export default class extends React.Component {
   render() {
     return (
       shortcuts({
+        ref: (node) => { this._domNode = node },
         tabIndex: this.props.tabIndex || -1,
-        className: this.props.className
+        className: this.props.className,
       }, this.props.children)
     )
   }

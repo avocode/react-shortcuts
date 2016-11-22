@@ -8,9 +8,9 @@ import keymap from './keymap'
 
 chai.use(sinonChai)
 
-let { expect } = chai
+const { expect } = chai
 
-describe('Shortcut manager', function() {
+describe('Shortcut manager', () => {
   let ShortcutManager = null
 
   before(() => {
@@ -23,13 +23,13 @@ describe('Shortcut manager', function() {
     ShortcutManager = require('../src').ShortcutManager
   })
 
-  it('should return empty object when calling empty constructor', function() {
-    let manager = new ShortcutManager()
+  it('should return empty object when calling empty constructor', () => {
+    const manager = new ShortcutManager()
     expect(manager.getAllShortcuts()).to.be.empty
   })
 
-  it('should return all shortcuts', function() {
-    let manager = new ShortcutManager(keymap)
+  it('should return all shortcuts', () => {
+    const manager = new ShortcutManager(keymap)
     expect(manager.getAllShortcuts()).to.not.be.empty
     expect(manager.getAllShortcuts()).to.be.equal(keymap)
 
@@ -48,22 +48,22 @@ describe('Shortcut manager', function() {
     expect(ShortcutManager.CHANGE_EVENT).to.be.equal('shortcuts:update')
   )
 
-  it('should call onUpdate', function() {
-    let manager = new ShortcutManager()
-    let spy = sinon.spy()
+  it('should call onUpdate', () => {
+    const manager = new ShortcutManager()
+    const spy = sinon.spy()
     manager.addUpdateListener(spy)
     manager.setKeymap({})
     expect(spy).to.have.beenCalled
   })
 
-  it('should throw an error when setKeymap is called without arg', function() {
-    let manager = new ShortcutManager(keymap)
-    let error = /setKeymap: keymap argument is not defined or falsy./
+  it('should throw an error when setKeymap is called without arg', () => {
+    const manager = new ShortcutManager(keymap)
+    const error = /setKeymap: keymap argument is not defined or falsy./
     expect(manager.setKeymap).to.throw(error)
   })
 
-  it('should return array of shortcuts', function() {
-    let manager = new ShortcutManager(keymap)
+  it('should return array of shortcuts', () => {
+    const manager = new ShortcutManager(keymap)
     let shortcuts = manager.getShortcuts('Test')
     expect(shortcuts).to.be.an.array
 
@@ -78,14 +78,14 @@ describe('Shortcut manager', function() {
     expect(shortcuts.length).to.be.equal(5)
   })
 
-  it('should not throw an error when getting not existing key from keymap', function() {
-    let manager = new ShortcutManager(keymap)
-    let notExist = () => manager.getShortcuts('NotExist')
+  it('should not throw an error when getting not existing key from keymap', () => {
+    const manager = new ShortcutManager(keymap)
+    const notExist = () => manager.getShortcuts('NotExist')
     expect(notExist).to.not.throw()
   })
 
-  it('findShortcutName: should return correct key label', function() {
-    let manager = new ShortcutManager()
+  it('findShortcutName: should return correct key label', () => {
+    const manager = new ShortcutManager()
     manager.setKeymap(keymap)
 
     // Test
@@ -103,9 +103,9 @@ describe('Shortcut manager', function() {
     expect(manager.findShortcutName('enter', 'Next')).to.be.equal('CLOSE')
   })
 
-  it('findShortcutName: should throw an error', function() {
-    let manager = new ShortcutManager()
-    let fn = () => manager.findShortcutName('left')
+  it('findShortcutName: should throw an error', () => {
+    const manager = new ShortcutManager()
+    const fn = () => manager.findShortcutName('left')
     expect(manager.findShortcutName).to.throw(/findShortcutName: keyName argument is not defined or falsy./)
     expect(fn).to.throw(/findShortcutName: componentName argument is not defined or falsy./)
   })

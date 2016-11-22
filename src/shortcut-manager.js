@@ -5,7 +5,7 @@ import helpers from './helpers'
 
 
 const warning = (text) => {
-  if (process.env.NODE_ENV !== 'production') {
+  if (process && process.env.NODE_ENV !== 'production') {
     console.warn(text)
   }
 }
@@ -30,12 +30,11 @@ class ShortcutManager extends EventEmitter {
 
   _platformName = helpers.getPlatformName()
 
-  _parseShortcutDescriptor(item) {
+  _parseShortcutDescriptor = (item) => {
     if (_.isPlainObject(item)) {
       return _.get(item, this._platformName)
-    } else {
-      return item
     }
+    return item
   }
 
   setKeymap(keymap) {
@@ -53,25 +52,28 @@ class ShortcutManager extends EventEmitter {
     invariant(componentName,
       'getShortcuts: name argument is not defined or falsy.')
 
-    let cursor = this._keymap[componentName]
+    const cursor = this._keymap[componentName]
     if (!cursor) {
       warning(`getShortcuts: There are no shortcuts with name ${componentName}.`)
       return
     }
 
-    let _parseShortcutDescriptor = this._parseShortcutDescriptor.bind(this)
-    let shortcuts = _(cursor).map(_parseShortcutDescriptor).flatten().compact().value()
+    const shortcuts = _(cursor)
+      .map(this._parseShortcutDescriptor)
+      .flatten()
+      .compact()
+      .value()
 
     return shortcuts
   }
 
   _parseShortcutKeyName(obj, keyName) {
-    let result = _.findKey(obj, item => {
+    const result = _.findKey(obj, (item) => {
       if (_.isPlainObject(item)) {
         item = _.get(item, this._platformName)
       }
       if (_.isArray(item)) {
-        let index = item.indexOf(keyName)
+        const index = item.indexOf(keyName)
         if (index >= 0) { item = item[index] }
       }
       return item === keyName
@@ -86,8 +88,8 @@ class ShortcutManager extends EventEmitter {
     invariant(componentName,
       'findShortcutName: componentName argument is not defined or falsy.')
 
-    let cursor = this._keymap[componentName]
-    let result = this._parseShortcutKeyName(cursor, keyName)
+    const cursor = this._keymap[componentName]
+    const result = this._parseShortcutKeyName(cursor, keyName)
 
     return result
   }

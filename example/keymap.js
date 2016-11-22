@@ -6,7 +6,7 @@ export default {
     DELETE: {
       osx: ['command+backspace', 'k'],
       windows: 'delete',
-      linux: 'delete'
+      linux: 'delete',
     },
-  }
+  },
 }

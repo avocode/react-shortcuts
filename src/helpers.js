@@ -1,6 +1,6 @@
 import platform from 'platform'
 
-let getPlatformName = function() {
+const getPlatformName = () => {
   let os = platform.os.family || ''
   os = os.toLowerCase().replace(/ /g, '')
   if (/\bwin/.test(os)) {

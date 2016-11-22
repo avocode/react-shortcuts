@@ -1,57 +1,57 @@
 let { Shortcuts } = require('../src')
 
 Shortcuts = React.createFactory(Shortcuts)
-let { div, h1, p } = React.DOM
+const { div, h1, p } = React.DOM
 
 export default React.createClass({
   displayName: 'App',
 
   childContextTypes: {
-    shortcuts: React.PropTypes.object.isRequired
+    shortcuts: React.PropTypes.object.isRequired,
   },
 
   getInitialState() {
-    return {who: 'Nobody'}
+    return { who: 'Nobody' }
   },
 
   getChildContext() {
-    return {shortcuts: this.props.shortcuts}
+    return { shortcuts: this.props.shortcuts }
   },
 
   _handleShortcuts(command) {
     switch (command) {
-      case 'MOVE_LEFT': return this.setState({who: 'Hemingway - left'})
-      case 'DELETE': return this.setState({who: 'Hemingway - delete'})
-      case 'MOVE_RIGHT': return this.setState({who: 'Hemingway - right'})
-      case 'MOVE_UP': return this.setState({who: 'Hemingway - top'})
+      case 'MOVE_LEFT': return this.setState({ who: 'Hemingway - left' })
+      case 'DELETE': return this.setState({ who: 'Hemingway - delete' })
+      case 'MOVE_RIGHT': return this.setState({ who: 'Hemingway - right' })
+      case 'MOVE_UP': return this.setState({ who: 'Hemingway - top' })
     }
   },
 
   _handleShortcuts2(command) {
     switch (command) {
-      case 'MOVE_LEFT': return this.setState({who: 'Franz Kafka - left'})
-      case 'DELETE': return this.setState({who: 'Franz Kafka - delete'})
-      case 'MOVE_RIGHT': return this.setState({who: 'Franz Kafka - right'})
-      case 'MOVE_UP': return this.setState({who: 'Franz Kafka - top'})
+      case 'MOVE_LEFT': return this.setState({ who: 'Franz Kafka - left' })
+      case 'DELETE': return this.setState({ who: 'Franz Kafka - delete' })
+      case 'MOVE_RIGHT': return this.setState({ who: 'Franz Kafka - right' })
+      case 'MOVE_UP': return this.setState({ who: 'Franz Kafka - top' })
     }
   },
 
   _handleRoot(command) {
-    this.setState({who: 'Root shortcuts component'})
+    this.setState({ who: 'Root shortcuts component' })
   },
 
   render() {
     return (
 
-      div({className: 'root'},
+      div({ className: 'root' },
 
-        h1({className: 'who'}, this.state.who),
+        h1({ className: 'who' }, this.state.who),
 
         Shortcuts({
           name: this.constructor.displayName,
           handler: this._handleShortcuts,
           targetNodeSelector: '#app',
-          className: 'content'
+          className: 'content',
         },
           div(null,
             h1(null, 'Hemingway'),
@@ -63,7 +63,7 @@ export default React.createClass({
           name: this.constructor.displayName,
           handler: this._handleShortcuts2,
           stopPropagation: true,
-          className: 'content'
+          className: 'content',
         },
 
           div(null,
@@ -74,5 +74,5 @@ export default React.createClass({
       )
 
     )
-  }
+  },
 })
