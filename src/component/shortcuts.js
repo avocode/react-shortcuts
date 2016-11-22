@@ -2,6 +2,8 @@ import React from 'react'
 import invariant from 'invariant'
 import Combokeys from 'combokeys'
 
+import helpers from '../helpers'
+
 const shortcuts = React.createFactory('shortcuts')
 
 
@@ -98,7 +100,13 @@ export default class extends React.Component {
       const isInputLikeElement = domElement.tagName === 'INPUT' ||
         domElement.tagName === 'SELECT' || domElement.tagName === 'TEXTAREA' ||
           (domElement.contentEditable && domElement.contentEditable === 'true')
-      const isReturnString = event.key && event.key.length === 1
+    
+      let isReturnString
+      if (event.key) {
+        isReturnString = (event.key.length === 1)
+      } else {
+        isReturnString = Boolean(helpers.getCharacter(event))
+      }
 
       if (isInputLikeElement && isReturnString) {
         return true

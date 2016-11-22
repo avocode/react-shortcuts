@@ -15,4 +15,15 @@ const getPlatformName = () => {
   return os
 }
 
-export default { getPlatformName }
+const getCharacter = (event) => {
+  if (event.which == null) {
+    // NOTE: IE
+    return String.fromCharCode(event.keyCode)
+  } else if (event.which !== 0 && event.charCode !== 0) {
+    // NOTE: the rest
+    return String.fromCharCode(event.which)
+  }
+  return null
+}
+
+export default { getPlatformName, getCharacter }
