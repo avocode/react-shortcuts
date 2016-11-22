@@ -110,6 +110,16 @@ describe('Shortcut manager', () => {
     expect(manager.setKeymap).to.throw(error)
   })
 
+  it('should extend the keymap', () => {
+    const manager = new ShortcutManager()
+    const newKeymap = { 'TESTING-NAMESPACE': {} }
+    const extendedKeymap = Object.assign({}, keymap, newKeymap)
+    manager.setKeymap(keymap)
+    manager.extendKeymap(newKeymap)
+
+    expect(manager.getAllShortcuts()).to.eql(extendedKeymap)
+  })
+
   it('should return array of shortcuts', () => {
     const manager = new ShortcutManager(keymap)
     let shortcuts = manager.getShortcuts('Test')

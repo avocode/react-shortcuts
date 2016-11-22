@@ -44,6 +44,13 @@ class ShortcutManager extends EventEmitter {
     this.emit(ShortcutManager.CHANGE_EVENT)
   }
 
+  extendKeymap(keymap) {
+    invariant(keymap,
+      'extendKeymap: keymap argument is not defined or falsy.')
+    this._keymap = Object.assign({}, this._keymap, keymap)
+    this.emit(ShortcutManager.CHANGE_EVENT)
+  }
+
   getAllShortcuts() {
     return this._keymap
   }
