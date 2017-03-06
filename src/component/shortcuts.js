@@ -26,7 +26,7 @@ export default class extends React.Component {
     targetNodeSelector: React.PropTypes.string,
     global: React.PropTypes.bool,
     isolate: React.PropTypes.bool,
-    dataShortcuts: React.PropTypes.bool,
+    alwaysFireHandler: React.PropTypes.bool,
   }
 
   static defaultProps = {
@@ -38,7 +38,7 @@ export default class extends React.Component {
     targetNodeSelector: null,
     global: false,
     isolate: false,
-    dataShortcuts: false,
+    alwaysFireHandler: false,
   }
 
   componentDidMount() {
@@ -110,7 +110,7 @@ export default class extends React.Component {
         isReturnString = Boolean(helpers.getCharacter(event))
       }
 
-      if (isInputLikeElement && isReturnString && !this.props.dataShortcuts) {
+      if (isInputLikeElement && isReturnString && !this.props.alwaysFireHandler) {
         return true
       }
 
