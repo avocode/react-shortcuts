@@ -334,6 +334,24 @@ describe('Shortcuts component', () => {
     }
   })
 
+  it('should fire the handler from focused input', () => {
+    const props = _.assign({}, baseProps, { 
+      alwaysFireHandler: true, 
+      children: React.DOM.input({type: 'text', className: 'input'}) 
+    })
+    const shortcutComponent = React.createElement(Shortcuts, props)
+    const wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    const parentNode = ReactDOM.findDOMNode(wrapper.instance())
+    const node = parentNode.querySelector('.input')
+    node.focus()
+
+    const enter = 13
+    simulant.fire(node, 'keydown', { keyCode: enter })
+
+    expect(wrapper.props().handler).to.have.been.called
+  })
+
 
   describe('Shortcuts component inside Shortcuts component:', () => {
 
