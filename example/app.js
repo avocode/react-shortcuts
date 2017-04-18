@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types'
+
 let { Shortcuts } = require('../src')
 
 Shortcuts = React.createFactory(Shortcuts)
@@ -7,7 +9,7 @@ export default React.createClass({
   displayName: 'App',
 
   childContextTypes: {
-    shortcuts: React.PropTypes.object.isRequired,
+    shortcuts: PropTypes.object.isRequired,
   },
 
   getInitialState() {

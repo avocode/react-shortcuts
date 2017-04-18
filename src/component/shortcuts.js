@@ -1,6 +1,7 @@
 import React from 'react'
 import invariant from 'invariant'
 import Combokeys from 'combokeys'
+import PropTypes from 'prop-types'
 
 import helpers from '../helpers'
 
@@ -11,22 +12,22 @@ export default class extends React.Component {
   static displayName = 'Shortcuts'
 
   static contextTypes = {
-    shortcuts: React.PropTypes.object.isRequired,
+    shortcuts: PropTypes.object.isRequired,
   }
 
   static propTypes = {
-    children: React.PropTypes.node,
-    handler: React.PropTypes.func,
-    name: React.PropTypes.string,
-    tabIndex: React.PropTypes.number,
-    className: React.PropTypes.string,
-    eventType: React.PropTypes.string,
-    stopPropagation: React.PropTypes.bool,
-    preventDefault: React.PropTypes.bool,
-    targetNodeSelector: React.PropTypes.string,
-    global: React.PropTypes.bool,
-    isolate: React.PropTypes.bool,
-    alwaysFireHandler: React.PropTypes.bool,
+    children: PropTypes.node,
+    handler: PropTypes.func,
+    name: PropTypes.string,
+    tabIndex: PropTypes.number,
+    className: PropTypes.string,
+    eventType: PropTypes.string,
+    stopPropagation: PropTypes.bool,
+    preventDefault: PropTypes.bool,
+    targetNodeSelector: PropTypes.string,
+    global: PropTypes.bool,
+    isolate: PropTypes.bool,
+    alwaysFireHandler: PropTypes.bool,
   }
 
   static defaultProps = {
