@@ -5,9 +5,6 @@ import PropTypes from 'prop-types'
 
 import helpers from '../helpers'
 
-const shortcuts = React.createFactory('shortcuts')
-
-
 export default class extends React.Component {
   static displayName = 'Shortcuts'
 
@@ -186,7 +183,7 @@ export default class extends React.Component {
 
   render() {
     return (
-      shortcuts({
+      React.createElement('shortcuts', {
         ref: (node) => { this._domNode = node },
         tabIndex: this.props.tabIndex || -1,
         className: this.props.className,
