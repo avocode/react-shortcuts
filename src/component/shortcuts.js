@@ -5,15 +5,12 @@ import PropTypes from 'prop-types'
 
 import helpers from '../helpers'
 
-const shortcuts = React.createFactory('shortcuts')
-
-
 export default class extends React.Component {
-  static displayName = 'Shortcuts'
+  static displayName = 'Shortcuts';
 
   static contextTypes = {
     shortcuts: PropTypes.object.isRequired,
-  }
+  };
 
   static propTypes = {
     children: PropTypes.node,
@@ -28,7 +25,7 @@ export default class extends React.Component {
     global: PropTypes.bool,
     isolate: PropTypes.bool,
     alwaysFireHandler: PropTypes.bool,
-  }
+  };
 
   static defaultProps = {
     tabIndex: null,
@@ -40,7 +37,7 @@ export default class extends React.Component {
     global: false,
     isolate: false,
     alwaysFireHandler: false,
-  }
+  };
 
   componentDidMount() {
     this._onUpdate()
@@ -59,26 +56,33 @@ export default class extends React.Component {
 
     if (this.props.global) {
       const element = this._getElementToBind()
-      element.removeEventListener('shortcuts:global', this._customGlobalHandler)
+      element.removeEventListener(
+        'shortcuts:global',
+        this._customGlobalHandler
+      )
     }
   }
 
   // NOTE: combokeys must be instance per component
-  _combokeys = null
+  _combokeys = null;
 
-  _lastEvent = null
+  _lastEvent = null;
 
   _bindShortcuts = (shortcutsArr) => {
     const element = this._getElementToBind()
     element.setAttribute('tabindex', this.props.tabIndex || -1)
     this._combokeys = new Combokeys(element)
     this._decorateCombokeys()
-    this._combokeys.bind(shortcutsArr, this._handleShortcuts, this.props.eventType)
+    this._combokeys.bind(
+      shortcutsArr,
+      this._handleShortcuts,
+      this.props.eventType
+    )
 
     if (this.props.global) {
       element.addEventListener('shortcuts:global', this._customGlobalHandler)
     }
-  }
+  };
 
   _customGlobalHandler = (e) => {
     const { character, modifiers, event } = e.detail
@@ -91,7 +95,7 @@ export default class extends React.Component {
     if (e.target !== this._domNode && e.target !== targetNode) {
       this._combokeys.handleKey(character, modifiers, event, true)
     }
-  }
+  };
 
   _decorateCombokeys = () => {
     const element = this._getElementToBind()
@@ -101,25 +105,39 @@ export default class extends React.Component {
     // if the keyboard event should fire
     this._combokeys.stopCallback = (event, domElement, combo) => {
       const isInputLikeElement = domElement.tagName === 'INPUT' ||
-        domElement.tagName === 'SELECT' || domElement.tagName === 'TEXTAREA' ||
-          (domElement.contentEditable && domElement.contentEditable === 'true')
-    
+        domElement.tagName === 'SELECT' ||
+        domElement.tagName === 'TEXTAREA' ||
+        (domElement.contentEditable && domElement.contentEditable === 'true')
+
       let isReturnString
       if (event.key) {
-        isReturnString = (event.key.length === 1)
+        isReturnString = event.key.length === 1
       } else {
         isReturnString = Boolean(helpers.getCharacter(event))
       }
 
-      if (isInputLikeElement && isReturnString && !this.props.alwaysFireHandler) {
+      if (
+        isInputLikeElement && isReturnString && !this.props.alwaysFireHandler
+      ) {
         return true
       }
 
       return false
     }
 
-    this._combokeys.handleKey = (character, modifiers, event, isGlobalHandler) => {
-      if (this._lastEvent && event.timeStamp === this._lastEvent.timeStamp && event.type === this._lastEvent.type) { return }
+    this._combokeys.handleKey = (
+      character,
+      modifiers,
+      event,
+      isGlobalHandler
+    ) => {
+      if (
+        this._lastEvent &&
+        event.timeStamp === this._lastEvent.timeStamp &&
+        event.type === this._lastEvent.type
+      ) {
+        return
+      }
       this._lastEvent = event
 
       if (this.props.isolate) {
@@ -127,17 +145,23 @@ export default class extends React.Component {
       }
 
       if (!isGlobalHandler) {
-        element.dispatchEvent(new CustomEvent('shortcuts:global', {
-          detail: { character, modifiers, event },
-          bubbles: true,
-          cancelable: true,
-        }))
+        element.dispatchEvent(
+          new CustomEvent('shortcuts:global', {
+            detail: { character, modifiers, event },
+            bubbles: true,
+            cancelable: true,
+          })
+        )
       }
 
       // NOTE: works normally if it's not an isolated event
       if (!event.__isolateShortcuts) {
-        if (this.props.preventDefault) { event.preventDefault() }
-        if (this.props.stopPropagation && !isGlobalHandler) { event.stopPropagation() }
+        if (this.props.preventDefault) {
+          event.preventDefault()
+        }
+        if (this.props.stopPropagation && !isGlobalHandler) {
+          event.stopPropagation()
+        }
         originalHandleKey(character, modifiers, event)
         return
       }
@@ -147,50 +171,61 @@ export default class extends React.Component {
         originalHandleKey(character, modifiers, event)
       }
     }
-  }
+  };
 
   _getElementToBind = () => {
     let element = null
     if (this.props.targetNodeSelector) {
       element = document.querySelector(this.props.targetNodeSelector)
-      invariant(element, `Node selector '${this.props.targetNodeSelector}'  was not found.`)
+      invariant(
+        element,
+        `Node selector '${this.props.targetNodeSelector}'  was not found.`
+      )
     } else {
       element = this._domNode
     }
 
     return element
-  }
+  };
 
   _unbindShortcuts = () => {
     if (this._combokeys) {
       this._combokeys.detach()
       this._combokeys.reset()
     }
-  }
+  };
 
   _onUpdate = () => {
-    const shortcutsArr = this.props.name && this.context.shortcuts.getShortcuts(this.props.name)
+    const shortcutsArr = this.props.name &&
+      this.context.shortcuts.getShortcuts(this.props.name)
     this._unbindShortcuts()
     this._bindShortcuts(shortcutsArr || [])
-  }
+  };
 
   _handleShortcuts = (event, keyName) => {
     if (this.props.name) {
-      const shortcutName = this.context.shortcuts.findShortcutName(keyName, this.props.name)
+      const shortcutName = this.context.shortcuts.findShortcutName(
+        keyName,
+        this.props.name
+      )
 
       if (this.props.handler) {
         this.props.handler(shortcutName, event)
       }
     }
-  }
+  };
 
   render() {
     return (
-      shortcuts({
-        ref: (node) => { this._domNode = node },
-        tabIndex: this.props.tabIndex || -1,
-        className: this.props.className,
-      }, this.props.children)
+      <shortcuts
+        ref={(node) => {
+          this._domNode = node
+        }}
+        tabIndex={this.props.tabIndex || -1}
+        className={this.props.className}
+      >
+        {this.props.children}
+      </shortcuts>
     )
   }
 }
