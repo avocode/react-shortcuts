@@ -129,7 +129,7 @@ class App extends React.Component {
 }
 
 App.childContextTypes = {
-  shortcuts: React.PropTypes.object.isRequired
+  shortcuts: PropTypes.object.isRequired
 }
 ```
 
