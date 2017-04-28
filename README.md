@@ -48,7 +48,7 @@ Create a new JS, Coffee, JSON or CSON file wherever you want (which probably is 
 
 **Keymap definition**
 
-```
+```json
 {
  "Namespace": {
    "Action": "Shortcut",
@@ -78,7 +78,7 @@ Create a new JS, Coffee, JSON or CSON file wherever you want (which probably is 
 ##### Example `keymap` definition:
 
 
-```
+```javascript
 export default {
   TODO_ITEM: {
     MOVE_LEFT: 'left',
@@ -97,7 +97,7 @@ export default {
 Save this file as `keymap.[js|coffee|json|cson]` and require it into your main
 file.
 
-```
+```javascript
 import keymap from './keymap'
 ```
 
@@ -107,7 +107,7 @@ Define your keymap in whichever supported format but in the end it must be an
 object. `ShortcutsManager` can’t parse JSON and will certainly not be happy
 about the situation.
 
-```
+```javascript
 import keymap from './keymap'
 import { ShortcutManager } from 'react-shortcuts'
 
@@ -121,7 +121,7 @@ shortcutManager.setKeymap(keymap)
 
 #### 4. Include `shortcutManager` into getChildContext of some parent component. So that `<shortcuts>` can receive it.
 
-```
+```javascript
 class App extends React.Component {
   getChildContext() {
     return { shortcuts: shortcutManager }
@@ -138,7 +138,7 @@ App.childContextTypes = {
 You need to require the component in the file you want to use shortcuts in.
 For example `<TodoItem>`.
 
-```
+```javascript
 import { Shortcuts } from `react-shortcuts`
 
 class TodoItem extends React.Component {
