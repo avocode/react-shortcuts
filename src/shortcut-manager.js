@@ -89,13 +89,8 @@ class ShortcutManager extends EventEmitter {
       return
     }
 
-    const shortcuts = _(cursor)
-      .map(this._parseShortcutDescriptor)
-      .flatten()
-      .compact()
-      .value()
-
-    return shortcuts
+    const shortcuts = _.map(cursor, this._parseShortcutDescriptor)
+    return _.values(_.compact(_.flatten(shortcuts)))
   }
 
   _parseShortcutKeyName(obj, keyName) {
