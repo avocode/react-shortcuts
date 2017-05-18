@@ -162,8 +162,8 @@ class TodoItem extends React.Component {
   render() {
     return (
       <Shortcuts
-        name='TODO_ITEM',
-        handler={this._handleShortcuts},
+        name='TODO_ITEM'
+        handler={this._handleShortcuts}
       >
         <div>Make something amazing today</div>
       </Shortcuts>
