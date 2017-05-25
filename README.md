@@ -196,6 +196,8 @@ class TodoItem extends React.Component {
   - Use this when you have some global app wide shortcuts like `CMD+Q`.
 - `isolate`: bool
   - Use this when a child component has React's key handler (onKeyUp, onKeyPress, onKeyDown). Otherwise, React Shortcuts stops propagation of that event due to nature of event delegation that React uses internally.
+- `alwaysFireHandler`: bool
+  - Use this when you want events keep firing on the focused input elements. 
 
 
 ## Thanks, Atom
