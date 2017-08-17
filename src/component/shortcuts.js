@@ -140,8 +140,10 @@ export default class extends React.Component {
       }
       this._lastEvent = event
 
-      if (this.props.isolate) {
+      let isolateOwner = false
+      if (this.props.isolate && !event.__isolateShortcuts) {
         event.__isolateShortcuts = true
+        isolateOwner = true
       }
 
       if (!isGlobalHandler) {
@@ -167,7 +169,7 @@ export default class extends React.Component {
       }
 
       // NOTE: global shortcuts should work even for an isolated event
-      if (this.props.global || this.props.isolate) {
+      if (this.props.global || isolateOwner) {
         originalHandleKey(character, modifiers, event)
       }
     }
