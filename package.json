@@ -23,7 +23,7 @@
     "test": "mocha"
   },
   "dependencies": {
-    "combokeys": "^2.4.6",
+    "combokeys": "^3.0.0",
     "events": "^1.0.2",
     "invariant": "^2.1.0",
     "lodash": "^4.15.0",
