@@ -60,12 +60,12 @@ describe('Shortcuts component', () => {
 
     expect(wrapper.props().tabIndex).to.be.equal(-1)
 
-    var props = _.assign({}, baseProps, { tabIndex: 42 })
+    let props = _.assign({}, baseProps, { tabIndex: 42 })
     shortcutComponent = React.createElement(Shortcuts, props)
     wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
 
     expect(wrapper.props().tabIndex).to.be.equal(props.tabIndex)
-    var realTabIndex = ReactDOM.findDOMNode(wrapper.instance()).getAttribute('tabindex')
+    let realTabIndex = ReactDOM.findDOMNode(wrapper.instance()).getAttribute('tabindex')
     expect(realTabIndex).to.have.equal(String(props.tabIndex))
 
     props.tabIndex = 0
