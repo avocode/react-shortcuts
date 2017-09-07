@@ -28,7 +28,7 @@ export default class extends React.Component {
   };
 
   static defaultProps = {
-    tabIndex: null,
+    tabIndex: -1,
     className: null,
     eventType: null,
     stopPropagation: true,
@@ -70,7 +70,7 @@ export default class extends React.Component {
 
   _bindShortcuts = (shortcutsArr) => {
     const element = this._getElementToBind()
-    element.setAttribute('tabindex', this.props.tabIndex || -1)
+    element.setAttribute('tabindex', this.props.tabIndex)
     this._combokeys = new Combokeys(element)
     this._decorateCombokeys()
     this._combokeys.bind(
@@ -223,7 +223,7 @@ export default class extends React.Component {
         ref={(node) => {
           this._domNode = node
         }}
-        tabIndex={this.props.tabIndex || -1}
+        tabIndex={this.props.tabIndex}
         className={this.props.className}
       >
         {this.props.children}
