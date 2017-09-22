@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import reduce from 'just-reduce-object'
 import invariant from 'invariant'
 import { EventEmitter } from 'events'
 import helpers from './helpers'
@@ -58,7 +58,7 @@ class ShortcutManager extends EventEmitter {
 
   getAllShortcutsForPlatform(platformName) {
     const _transformShortcuts = (shortcuts) => {
-      return _.reduce(shortcuts, (result, keyValue, keyName) => {
+      return reduce(shortcuts, (result, keyName, keyValue) => {
         if (isPlainObject(keyValue)) {
           if (keyValue[platformName]) {
             keyValue = keyValue[platformName]
