@@ -8,7 +8,7 @@ export const findKey = (obj, fn) => {
   if (!isPlainObject(obj) && !isArray(obj)) return
 
   const keys = Object.keys(obj)
-  return keys.find(key => fn.call(null, obj[key]))
+  return keys.find(key => fn(obj[key]))
 }
 
 export const compact = arr => arr.filter(Boolean)
