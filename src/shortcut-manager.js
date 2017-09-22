@@ -2,6 +2,7 @@ import _ from 'lodash'
 import invariant from 'invariant'
 import { EventEmitter } from 'events'
 import helpers from './helpers'
+import { isPlainObject, findKey, isArray, map, compact, flatten } from './utils'
 
 
 const warning = (text) => {
@@ -31,8 +32,8 @@ class ShortcutManager extends EventEmitter {
   _platformName = helpers.getPlatformName()
 
   _parseShortcutDescriptor = (item) => {
-    if (_.isPlainObject(item)) {
-      return _.get(item, this._platformName)
+    if (isPlainObject(item)) {
+      return item[this._platformName]
     }
     return item
   }
@@ -58,7 +59,7 @@ class ShortcutManager extends EventEmitter {
   getAllShortcutsForPlatform(platformName) {
     const _transformShortcuts = (shortcuts) => {
       return _.reduce(shortcuts, (result, keyValue, keyName) => {
-        if (_.isPlainObject(keyValue)) {
+        if (isPlainObject(keyValue)) {
           if (keyValue[platformName]) {
             keyValue = keyValue[platformName]
           } else {
@@ -89,21 +90,17 @@ class ShortcutManager extends EventEmitter {
       return
     }
 
-    const shortcuts = _(cursor)
-      .map(this._parseShortcutDescriptor)
-      .flatten()
-      .compact()
-      .value()
+    const shortcuts = compact(flatten(map(cursor, this._parseShortcutDescriptor)))
 
     return shortcuts
   }
 
   _parseShortcutKeyName(obj, keyName) {
-    const result = _.findKey(obj, (item) => {
-      if (_.isPlainObject(item)) {
-        item = _.get(item, this._platformName)
+    const result = findKey(obj, (item) => {
+      if (isPlainObject(item)) {
+        item = item[this._platformName]
       }
-      if (_.isArray(item)) {
+      if (isArray(item)) {
         const index = item.indexOf(keyName)
         if (index >= 0) { item = item[index] }
       }
