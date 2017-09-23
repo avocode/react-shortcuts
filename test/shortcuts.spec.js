@@ -51,7 +51,7 @@ describe('Shortcuts component', () => {
     const shortcutComponent = React.createElement(Shortcuts, baseProps)
     const wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
 
-    expect(wrapper.find('shortcuts')).to.have.length(1)
+    expect(wrapper.find('div')).to.have.length(1)
   })
 
   it('should not have tabIndex attribute by default', () => {
