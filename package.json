@@ -69,6 +69,7 @@
     "jsdom": "^8.0.4",
     "less": "^2.5.1",
     "less-loader": "^2.2.0",
+    "lodash": "^4.15.0",
     "mocha": "^2.2.5",
     "react": "^0.14.8 || ^15",
     "react-addons-test-utils": "^0.14.8 || ^15",
