@@ -7,6 +7,8 @@ describe('utils', () => {
   let primitives
 
   beforeEach(() => {
+    function fn() { this.a = 1 }
+
     primitives = [
       ['array'],
       { object: true },
@@ -15,6 +17,7 @@ describe('utils', () => {
       undefined,
       NaN,
       new Map([[ 1, 'one' ], [ 2, 'two' ]]),
+      new fn(),
       true,
       42,
     ]
