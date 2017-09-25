@@ -12,6 +12,7 @@ describe('utils', () => {
     primitives = [
       ['array'],
       { object: true },
+      Object.create(null),
       'string',
       null,
       undefined,
@@ -40,7 +41,7 @@ describe('utils', () => {
   describe('isPlainObject', () => {
     it('should be true for plain objects', () => {
       primitives.forEach((val, idx) => {
-        if (idx === 1) {
+        if (idx === 1 || idx === 2) {
           expect(isPlainObject(val)).to.be.true
           expect(_.isPlainObject(val)).to.be.true
         } else {

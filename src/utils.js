@@ -2,7 +2,7 @@ export const isArray = arr => Array.isArray(arr)
 
 export const isPlainObject = (obj) => {
   const isObject = typeof obj === 'object' && obj !== null && !isArray(obj)
-  if (!isObject || obj.toString() !== '[object Object]') return false
+  if (!isObject || (obj.toString && obj.toString() !== '[object Object]')) return false
   const proto = Object.getPrototypeOf(obj)
   if (proto === null) {
     return true
