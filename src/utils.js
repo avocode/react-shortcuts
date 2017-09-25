@@ -1,7 +1,8 @@
 export const isArray = arr => Array.isArray(arr)
 
 export const isPlainObject = (obj) => {
-  return typeof obj === 'object' && obj !== null && !isArray(obj)
+  const isObject = typeof obj === 'object' && obj !== null && !isArray(obj)
+  return isObject && obj.toString() === '[object Object]'
 }
 
 export const findKey = (obj, fn) => {

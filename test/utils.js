@@ -13,6 +13,8 @@ describe('utils', () => {
       'string',
       null,
       undefined,
+      NaN,
+      new Map([[ 1, 'one' ], [ 2, 'two' ]]),
       true,
       42,
     ]
