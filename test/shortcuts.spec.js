@@ -54,18 +54,26 @@ describe('Shortcuts component', () => {
     expect(wrapper.find('div')).to.have.length(1)
   })
 
-  it('should not have tabIndex attribute by default', () => {
+  it('should have a tabIndex of -1 by default', () => {
     let shortcutComponent = React.createElement(Shortcuts, baseProps)
     let wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
 
-    expect(wrapper.props().tabIndex).to.be.equal(null)
+    expect(wrapper.props().tabIndex).to.be.equal(-1)
 
-    const props = _.assign({}, baseProps, { tabIndex: 42 })
+    let props = _.assign({}, baseProps, { tabIndex: 42 })
     shortcutComponent = React.createElement(Shortcuts, props)
     wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
 
     expect(wrapper.props().tabIndex).to.be.equal(props.tabIndex)
-    const realTabIndex = ReactDOM.findDOMNode(wrapper.instance()).getAttribute('tabindex')
+    let realTabIndex = ReactDOM.findDOMNode(wrapper.instance()).getAttribute('tabindex')
+    expect(realTabIndex).to.have.equal(String(props.tabIndex))
+
+    props.tabIndex = 0
+    shortcutComponent = React.createElement(Shortcuts, props)
+    wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    expect(wrapper.props().tabIndex).to.be.equal(props.tabIndex)
+    realTabIndex = ReactDOM.findDOMNode(wrapper.instance()).getAttribute('tabindex')
     expect(realTabIndex).to.have.equal(String(props.tabIndex))
   })
 
