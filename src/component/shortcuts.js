@@ -219,7 +219,7 @@ export default class extends React.Component {
 
   render() {
     return (
-      <shortcuts
+      <div
         ref={(node) => {
           this._domNode = node
         }}
@@ -227,7 +227,7 @@ export default class extends React.Component {
         className={this.props.className}
       >
         {this.props.children}
-      </shortcuts>
+      </div>
     )
   }
 }
