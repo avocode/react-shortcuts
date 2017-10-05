@@ -16,6 +16,7 @@ describe('Shortcuts component', () => {
   let ReactDOM = null
   let React = null
   let enzyme = null
+  let DOM = null
 
   chai.use(sinonChai)
   const { expect } = chai
@@ -28,8 +29,11 @@ describe('Shortcuts component', () => {
     global.CustomEvent = window.CustomEvent
     simulant = require('simulant')
     ReactDOM = require('react-dom')
+    DOM = require('react-dom-factories')
     React = require('react')
     enzyme = require('enzyme')
+    const Adapter = require('enzyme-adapter-react-16')
+    enzyme.configure({ adapter: new Adapter() })
     const chaiEnzyme = require('chai-enzyme')
 
     chai.use(chaiEnzyme())
@@ -116,18 +120,18 @@ describe('Shortcuts component', () => {
   })
 
   it('should have children', () => {
-    const props = _.assign({}, baseProps, { children: React.DOM.div() })
+    const props = _.assign({}, baseProps, { children: DOM.div() })
     const shortcutComponent = React.createElement(Shortcuts, props)
     const wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
 
-    expect(wrapper).to.contain(React.DOM.div())
+    expect(wrapper).to.contain(DOM.div())
   })
 
   it('should have handler prop', () => {
     const shortcutComponent = React.createElement(Shortcuts, baseProps)
     const wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
 
-    expect(wrapper.props().handler).to.be.function
+    expect(wrapper.props().handler).to.be.a('function')
   })
 
   it('should have name prop', () => {
@@ -267,15 +271,16 @@ describe('Shortcuts component', () => {
     const node = ReactDOM.findDOMNode(wrapper.instance())
     node.focus()
 
+    const handler = wrapper.props().handler
     wrapper.unmount()
 
     const enter = 13
     simulant.fire(node, 'keydown', { keyCode: enter })
 
-    expect(wrapper.props().handler).to.not.have.been.called
+    expect(handler).to.not.have.been.called
   })
 
-  it('should update the shortcuts and fire the handler', () => {
+  it('should update the shortcuts and fire the handler', (done) => {
     const shortcutComponent = React.createElement(Shortcuts, baseProps)
     const wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
 
@@ -293,19 +298,25 @@ describe('Shortcuts component', () => {
       },
     }
     )
+
     baseContext.shortcuts.setKeymap(editedKeymap)
 
-    simulant.fire(node, 'keydown', { keyCode: space })
+    // sometimes node loose focus, so I added this timeout to fix it
+    setTimeout(() => {
+      node.focus()
 
-    expect(baseProps.handler).to.have.been.called
+      simulant.fire(node, 'keydown', { keyCode: space })
+      expect(baseProps.handler).to.have.been.called
 
-    // NOTE: rollback the previous keymap
-    baseContext.shortcuts.setKeymap(keymap)
+       // NOTE: rollback the previous keymap
+      baseContext.shortcuts.setKeymap(keymap)
+      done()
+    }, 100)
   })
 
   it('should fire the handler from a child input', () => {
     const props = _.assign({}, baseProps, {
-      children: React.DOM.input({ type: 'text', className: 'input' }),
+      children: DOM.input({ type: 'text', className: 'input' }),
     })
     const shortcutComponent = React.createElement(Shortcuts, props)
     const wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
@@ -335,17 +346,14 @@ describe('Shortcuts component', () => {
     const props = _.assign({}, baseProps, { targetNodeSelector: 'non-existing' })
     const shortcutComponent = React.createElement(Shortcuts, props)
 
-    try {
-      enzyme.mount(shortcutComponent, { context: baseContext })
-    } catch (err) {
-      expect(err).to.match(/Node selector 'non-existing'  was not found/)
-    }
+    const fn = () => enzyme.mount(shortcutComponent, { context: baseContext })
+    expect(fn).to.throw()
   })
 
   it('should fire the handler from focused input', () => {
     const props = _.assign({}, baseProps, { 
       alwaysFireHandler: true, 
-      children: React.DOM.input({type: 'text', className: 'input'}) 
+      children: DOM.input({type: 'text', className: 'input'}) 
     })
     const shortcutComponent = React.createElement(Shortcuts, props)
     const wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
