@@ -33,7 +33,12 @@ With `react-shortcuts` you can declaratively manage shortcuts for each one of yo
 - `ShortcutManager` which handles `keymap`
 - `<Shortcut>` component for handling shortcuts
 
-**DEMO:** http://avocode.github.io/react-shortcuts/
+
+Try online demo
+-------
+
+[![Edit l40jjo48nl](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/l40jjo48nl)
+
 
 Quick tour
 ----------
