@@ -35,7 +35,4 @@ module.exports = {
     ],
     noParse: /\.min\.js/,
   },
-  externals: [
-    { react: 'React' },
-  ],
 }

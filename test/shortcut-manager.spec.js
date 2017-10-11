@@ -101,7 +101,7 @@ describe('Shortcut manager', () => {
     const spy = sinon.spy()
     manager.addUpdateListener(spy)
     manager.setKeymap({})
-    expect(spy).to.have.beenCalled
+    expect(spy).to.have.been.called
   })
 
   it('should throw an error when setKeymap is called without arg', () => {
@@ -123,14 +123,14 @@ describe('Shortcut manager', () => {
   it('should return array of shortcuts', () => {
     const manager = new ShortcutManager(keymap)
     let shortcuts = manager.getShortcuts('Test')
-    expect(shortcuts).to.be.an.array
+    expect(shortcuts).to.be.an('array')
 
     let shouldContainStrings = _.every(shortcuts, _.isString)
     expect(shouldContainStrings).to.be.equal(true)
     expect(shortcuts.length).to.be.equal(5)
 
     shortcuts = manager.getShortcuts('Next')
-    expect(shortcuts).to.be.an.array
+    expect(shortcuts).to.be.an('array')
     shouldContainStrings = _.every(shortcuts, _.isString)
     expect(shouldContainStrings).to.be.equal(true)
     expect(shortcuts.length).to.be.equal(5)

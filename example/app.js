@@ -1,46 +1,51 @@
+import React from 'react'
 import PropTypes from 'prop-types'
+import DOM from 'react-dom-factories'
 
 let { Shortcuts } = require('../src')
 
 Shortcuts = React.createFactory(Shortcuts)
-const { div, h1, p } = React.DOM
+const { div, h1, p } = DOM
 
-export default React.createClass({
-  displayName: 'App',
+export default class extends React.Component {
+  static displayName = 'App'
 
-  childContextTypes: {
+  static childContextTypes = {
     shortcuts: PropTypes.object.isRequired,
-  },
+  }
 
-  getInitialState() {
-    return { who: 'Nobody' }
-  },
+  constructor(props) {
+    super(props)
+    this.state = {
+      who: 'Nobody',
+    }
+  }
 
   getChildContext() {
     return { shortcuts: this.props.shortcuts }
-  },
+  }
 
-  _handleShortcuts(command) {
+  _handleShortcuts = (command) => {
     switch (command) {
       case 'MOVE_LEFT': return this.setState({ who: 'Hemingway - left' })
       case 'DELETE': return this.setState({ who: 'Hemingway - delete' })
       case 'MOVE_RIGHT': return this.setState({ who: 'Hemingway - right' })
       case 'MOVE_UP': return this.setState({ who: 'Hemingway - top' })
     }
-  },
+  }
 
-  _handleShortcuts2(command) {
+  _handleShortcuts2 = (command) => {
     switch (command) {
       case 'MOVE_LEFT': return this.setState({ who: 'Franz Kafka - left' })
       case 'DELETE': return this.setState({ who: 'Franz Kafka - delete' })
       case 'MOVE_RIGHT': return this.setState({ who: 'Franz Kafka - right' })
       case 'MOVE_UP': return this.setState({ who: 'Franz Kafka - top' })
     }
-  },
+  }
 
-  _handleRoot(command) {
+  _handleRoot = (command) => {
     this.setState({ who: 'Root shortcuts component' })
-  },
+  }
 
   render() {
     return (
@@ -76,5 +81,5 @@ export default React.createClass({
       )
 
     )
-  },
-})
+  }
+}
