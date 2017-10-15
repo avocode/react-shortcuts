@@ -1,9 +1,15 @@
-import reduce from 'just-reduce-object'
+import reduce from 'lodash.reduce'
 import invariant from 'invariant'
-import { EventEmitter } from 'events'
-import helpers from './helpers'
-import { isPlainObject, findKey, isArray, map, compact, flatten } from './utils'
+import isPlainObject from 'lodash.isplainobject'
+import findKey from 'lodash.findkey'
+import isArray from 'lodash.isarray'
+import map from 'lodash.map'
+import compact from 'lodash.compact'
+import flatten from 'lodash.flatten'
 
+import { EventEmitter } from 'events'
+
+import helpers from './helpers'
 
 const warning = (text) => {
   if (process && process.env.NODE_ENV !== 'production') {
@@ -58,7 +64,7 @@ class ShortcutManager extends EventEmitter {
 
   getAllShortcutsForPlatform(platformName) {
     const _transformShortcuts = (shortcuts) => {
-      return reduce(shortcuts, (result, keyName, keyValue) => {
+      return reduce(shortcuts, (result, keyValue, keyName) => {
         if (isPlainObject(keyValue)) {
           if (keyValue[platformName]) {
             keyValue = keyValue[platformName]
