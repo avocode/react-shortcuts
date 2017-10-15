@@ -106,39 +106,28 @@ file.
 import keymap from './keymap'
 ```
 
-#### 3. Rise of the ShortcutsManager
+#### 3. Wrap your application in \<ShortcutsProvider\>
 
 Define your keymap in whichever supported format but in the end it must be an
-object. `ShortcutsManager` can’t parse JSON and will certainly not be happy
+object. `ShortcutsProvider` can’t parse JSON and will certainly not be happy
 about the situation.
+
+Wrap your application (or the part that you want to use keyboard shortcuts with) in a `<ShortcutsProvider>` tag. This will provide the necessary attributes in `context` for `<Shortcuts>` (below) to function.
 
 ```javascript
 import keymap from './keymap'
-import { ShortcutManager } from 'react-shortcuts'
+import { ShortcutsProvider } from 'react-shortcuts'
 
-const shortcutManager = new ShortcutManager(keymap)
+// ...
 
-// Or like this
+<ShortcutsProvider keymap={ keymap } >
+   <MyApplication >
 
-const shortcutManager = new ShortcutManager()
-shortcutManager.setKeymap(keymap)
+   </MyApplication>
+</ShortcutsProvider>
 ```
 
-#### 4. Include `shortcutManager` into getChildContext of some parent component. So that `<shortcuts>` can receive it.
-
-```javascript
-class App extends React.Component {
-  getChildContext() {
-    return { shortcuts: shortcutManager }
-  }
-}
-
-App.childContextTypes = {
-  shortcuts: PropTypes.object.isRequired
-}
-```
-
-#### 5. Require the <shortcuts> component
+#### 4. Require the <shortcuts> component
 
 You need to require the component in the file you want to use shortcuts in.
 For example `<TodoItem>`.
@@ -202,7 +191,7 @@ class TodoItem extends React.Component {
 - `isolate`: bool
   - Use this when a child component has React's key handler (onKeyUp, onKeyPress, onKeyDown). Otherwise, React Shortcuts stops propagation of that event due to nature of event delegation that React uses internally.
 - `alwaysFireHandler`: bool
-  - Use this when you want events keep firing on the focused input elements. 
+  - Use this when you want events keep firing on the focused input elements.
 
 
 ## Thanks, Atom
