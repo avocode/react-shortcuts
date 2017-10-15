@@ -250,7 +250,7 @@ If you have multiple matching global keyboard shortcuts defined, the [order used
 
 Once the handler for the first matching global keyboard shortcut has been called (if any), matching non-global keyboard shortcuts are activated according to the [order used to match actions](#order-used-to-match-actions).
 
-## Integrating with existing onKeyDown, onKeyUp and onKeyPress handlers
+## Integrating with existing onKey handlers
 
 By default `react-shortcuts` will capture key events - both matching and not - before they reach React's event system. This means that any existing React elements with `onKeyDown`, `onKeyUp` or `onKeyPress` handlers that are ancestors or descendents of `<Shortcuts>` will not receive these events.
 
@@ -266,7 +266,7 @@ One common situation where this is necessary is when you have `<Shortcuts>` wrap
 
 > Currently, `onKeyPress` handlers do not seem to be called, regardless of the value of `isolate` - consider changing to `onKeyDown` or `onKeyUp` where possible
 
-`isolate` has no effect on event propagation *within* `react-shortcuts` own event system - for that, see [Propagating keyboard shortcuts](#Propagating-keyboard-shortcuts).
+`isolate` has no effect on event propagation *within* `react-shortcuts` own event system - for that, see [Propagating keyboard shortcuts](#propagating-keyboard-shortcuts).
 
 ## Handler function
 
@@ -277,7 +277,7 @@ The handler function is called when (all must be true):
 * The `<div>` rendered by `<Shortcuts>`, or one of its children in the DOM, is focused
 * A matching a namespace is defined in the keymap
 * A keyboard shortcut is pressed that matches one defined within the matching namespace
-* None of the conditions for [when a handler is NOT called](#When-a-handler-is-NOT-called) are true
+* None of the conditions for [when a handler is NOT called](#when-a-handler-is-not-called) are true
 
 ### When a handler is NOT called
 
@@ -286,24 +286,24 @@ The handler function is **not** called when (any can be true):
 * The `<div>` rendered by `<Shortcuts>`, or one of its children in the DOM, are not focused
 * There are no namespaces in the keymap that match the `<Shortcuts>`'s `name` prop
 * There are no matching keyboard shortcuts defined in the matching namespace
-* The action has already been matched by another shortcut (see [order used to match actions](#order-used-to-match-actions)) and the matching `<Shortcuts>` has **not** [enabled event propagation](#Propagating-keyboard-shortcuts)
-* It is a [global keyboard shortcut](#Global-keyboard-shortcut) and it has already been matched by another global keyboard shortcut (see [order used to match actions](#order-used-to-match-actions)).
+* The action has already been matched by another shortcut (see [order used to match actions](#order-used-to-match-actions)) and the matching `<Shortcuts>` has **not** [enabled event propagation](#propagating-keyboard-shortcuts)
+* It is a [global keyboard shortcut](#global-keyboard-shortcut) and it has already been matched by another global keyboard shortcut (see [order used to match actions](#order-used-to-match-actions)).
 
 ## `<Shortcuts>` props
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `name` |  string |  | Keyboard shortcuts' namespace - must match one specified in keymap file. (See [Define application shortcuts](#Define-application-shortcuts)) |
-|`handler` |  func |  | Callback function fired when a matching shortcut occurs. (See [Handler function](#Handler-function)) |
-| `tabIndex` | number | `-1` |  Determines element's `tabindex` HTML attribute. (See [Tab order](#Tab-order)) |
+| `name` |  string |  | Keyboard shortcuts' namespace - must match one specified in keymap file. (See [Define application shortcuts](#define-application-shortcuts)) |
+|`handler` |  func |  | Callback function fired when a matching shortcut occurs. (See [Handler function](#handler-function)) |
+| `tabIndex` | number | `-1` |  Determines element's `tabindex` HTML attribute. (See [Tab order](#tab-order)) |
 | `className` | string | | HTML `class` attribute |
 | `eventType` | string | `keydown`| What input event to listen to (keyup, keydown, keypress) |
-| `stopPropagation` | bool | `true` | Whether to stop events that match keyboard shortcuts propagating to parent `<Shortcuts>` elements. (See [Propagating keyboard shortcuts](#Propagating-keyboard-shortcuts)) |
-| `isolate` | bool | `false` | Whether to stop keyboard events reaching React's event system. (See [Integrating with existing onKeyDown, onKeyUp and onKeyPress handlers](#Integrating-with-existing-onKeyDown,-onKeyUp-and-onKeyPress-handlers).) |
+| `stopPropagation` | bool | `true` | Whether to stop events that match keyboard shortcuts propagating to parent `<Shortcuts>` elements. (See [Propagating keyboard shortcuts](#propagating-keyboard-shortcuts)) |
+| `isolate` | bool | `false` | Whether to stop keyboard events reaching React's event system. (See [Integrating with existing onKey handlers](#integrating-with-existing-onkey-handlers).) |
 | `preventDefault` | bool | `false` | Whether to prevent the default behaviour for the keyboard event |
 | `alwaysFireHandler` | bool | `false` | Whether to keep firing events on the focused input elements. |
 | `targetNodeSelector` | CSS query string | | Binds listeners to the element that matches the CSS query string instead of the `<div>` created by `<Shortcuts>`. Use with caution.|
-| `global` | bool | `false` | Use this when you have some global app wide shortcuts (See [Global keyboard shortcuts](#Global-keyboard-shortcuts))|
+| `global` | bool | `false` | Use this when you have some global app wide shortcuts (See [Global keyboard shortcuts](#global-keyboard-shortcuts))|
 
 
 ## Managing focus in the browser
@@ -375,23 +375,24 @@ document.activeElement
 
 #### Keyboard shortcut handlers are not being triggered
 
-Check your [namespace and shortcut definitions](#Define-application-shortcuts) match the keys you are pressing and and the [pre-requisites for when an keyboard event is triggered](#Handler-function) are being satisfied.
+Check your [namespace and shortcut definitions](#define-application-shortcuts) match the keys you are pressing and and the [pre-requisites for when an keyboard event is triggered](#handler-function) are being satisfied.
 
 #### Keyboard shortcuts for parent \<Shortcuts\> are not being triggered
 
-Check there are no descendent `<Shortcuts>` that also have matching keyboard shortcuts and *don't* use the `stopPropagation={false}` prop. See [Propagating keyboard shortcuts](#Propagating-keyboard-shortcuts) for more information).
+Check there are no descendent `<Shortcuts>` that also have matching keyboard shortcuts and *don't* use the `stopPropagation={false}` prop. See [Propagating keyboard shortcuts](#propagating-keyboard-shortcuts) for more information).
 
-#### onKeyDown or onKeyUp events are no longer triggered
-
-Check that you do not have a more deeply nested `<Shortcuts>` that also defines a matching keyboard shortcut. See [Global keyboard shortcuts](#Global-keyboard-shortcuts) for more information.
 
 #### Global keyboard shortcuts are not being triggered
 
-Use the [isolate prop](#Integrating-with-existing-onKeyDown,-onKeyUp-and-onKeyPress-handlers) to re-enable them.
+Check that you do not have a more deeply nested `<Shortcuts>` that also defines a matching keyboard shortcut. See [Global keyboard shortcuts](#global-keyboard-shortcuts) for more information.
+
+#### onKeyDown or onKeyUp events are no longer triggered
+
+Use the [isolate prop](#integrating-with-existing-onkey-handlers) to re-enable them.
 
 #### onKeyPress events are no longer triggered
 
-Switch to using `onKeyDown` or `onKeyUp` events instead. See the [isolate prop](#Integrating-with-existing-onKeyDown,-onKeyUp-and-onKeyPress-handlers) for more information.
+Switch to using `onKeyDown` or `onKeyUp` events instead. See the [isolate prop](#integrating-with-existing-onkey-handlers)) for more information.
 
 #### warning: possible EventEmitter memory leak detected
 
