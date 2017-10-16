@@ -1,46 +1,45 @@
-import PropTypes from 'prop-types'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
-let { Shortcuts } = require('../src')
+let { Shortcuts } = require('../src');
 
-Shortcuts = React.createFactory(Shortcuts)
-const { div, h1, p } = React.DOM
+Shortcuts = React.createFactory(Shortcuts);
+const { div, h1, p } = React.DOM;
 
-export default React.createClass({
-  displayName: 'App',
+class App extends Component {
+  constructor(props, context) {
+    super(props, context);
 
-  childContextTypes: {
-    shortcuts: PropTypes.object.isRequired,
-  },
-
-  getInitialState() {
-    return { who: 'Nobody' }
-  },
+    this.state = {
+      who: 'Nobody',
+    };
+  }
 
   getChildContext() {
-    return { shortcuts: this.props.shortcuts }
-  },
+    return { shortcuts: this.props.shortcuts };
+  }
 
   _handleShortcuts(command) {
     switch (command) {
-      case 'MOVE_LEFT': return this.setState({ who: 'Hemingway - left' })
-      case 'DELETE': return this.setState({ who: 'Hemingway - delete' })
-      case 'MOVE_RIGHT': return this.setState({ who: 'Hemingway - right' })
-      case 'MOVE_UP': return this.setState({ who: 'Hemingway - top' })
+      case 'MOVE_LEFT': return this.setState({ who: 'Hemingway - left' });
+      case 'DELETE': return this.setState({ who: 'Hemingway - delete' });
+      case 'MOVE_RIGHT': return this.setState({ who: 'Hemingway - right' });
+      case 'MOVE_UP': return this.setState({ who: 'Hemingway - top' });
     }
-  },
+  }
 
   _handleShortcuts2(command) {
     switch (command) {
-      case 'MOVE_LEFT': return this.setState({ who: 'Franz Kafka - left' })
-      case 'DELETE': return this.setState({ who: 'Franz Kafka - delete' })
-      case 'MOVE_RIGHT': return this.setState({ who: 'Franz Kafka - right' })
-      case 'MOVE_UP': return this.setState({ who: 'Franz Kafka - top' })
+      case 'MOVE_LEFT': return this.setState({ who: 'Franz Kafka - left' });
+      case 'DELETE': return this.setState({ who: 'Franz Kafka - delete' });
+      case 'MOVE_RIGHT': return this.setState({ who: 'Franz Kafka - right' });
+      case 'MOVE_UP': return this.setState({ who: 'Franz Kafka - top' });
     }
-  },
+  }
 
   _handleRoot(command) {
-    this.setState({ who: 'Root shortcuts component' })
-  },
+    this.setState({ who: 'Root shortcuts component' });
+  }
 
   render() {
     return (
@@ -75,6 +74,16 @@ export default React.createClass({
         )
       )
 
-    )
-  },
-})
+    );
+  }
+}
+
+App.propTypes = {
+  shortcuts: PropTypes.object.isRequired,
+};
+
+App.childContextTypes = {
+  shortcuts: PropTypes.object.isRequired,
+};
+
+export default App;

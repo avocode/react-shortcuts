@@ -25,4 +25,4 @@ export default {
     'CLOSE': 'esc',
   },
   'NON-EXISTING': {},
-}
+};

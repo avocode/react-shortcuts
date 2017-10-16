@@ -1,4 +1,4 @@
-const webpack = require('webpack')
+const webpack = require('webpack');
 
 module.exports = {
   entry: [
@@ -38,4 +38,4 @@ module.exports = {
   externals: [
     { react: 'React' },
   ],
-}
+};
