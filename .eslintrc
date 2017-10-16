@@ -11,7 +11,6 @@
     "node": true
   },
   "rules": {
-    "array-bracket-spacing": 0,
     "arrow-body-style": 0,
     "comma-dangle": [ 2, "always-multiline" ],
     "consistent-return": 0,
@@ -21,7 +20,6 @@
     "global-require": 0,
     "import/default": 2,
     "import/export": 2,
-    "import/imports-first": 0,
     "import/named": 2,
     "import/namespace": 2,
     "import/no-extraneous-dependencies": [
@@ -36,24 +34,16 @@
       }
     ],
     "import/prefer-default-export": 1,
-    "jsx-quotes": 0,
-    "new-cap": 0,
-    "max-len": 0,
-    "no-console": 0,
-    "no-fallthrough": 1,
-    "no-global-assign": 0,
-    "no-irregular-whitespace": [
-      "error", {
-        "skipStrings": true,
-        "skipTemplates": true,
-        "skipRegExps": true
+    "no-console": [
+      "error",
+      {
+        "allow": ["warn", "error", "info"]
       }
     ],
     "no-lonely-if": 0,
     "no-param-reassign": 0,
     "no-shadow": 1,
     "no-underscore-dangle": 0,
-    "no-unsafe-negation": 0,
     "no-unused-expressions": 0,
     "no-unused-vars": [
       "warn", {
@@ -76,11 +66,7 @@
     "react/jsx-curly-spacing": 0,
     "react/jsx-no-bind": 0,
     "react/jsx-filename-extension": 0,
-    "semi": [ 2, "never" ],
-  },
-  "globals": {
-    "require": false,
-    "ga": false
+    "react/forbid-prop-types": 0
   },
   "settings": {
     "import/ignore": [
@@ -92,6 +78,6 @@
         "config": "webpack-js.config.js"
       }
     },
-    "import/parser": "babel-eslint",
+    "import/parser": "babel-eslint"
   }
 }

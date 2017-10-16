@@ -1,1 +1,1 @@
-module.exports = require('./shortcuts')
+module.exports = require('./Shortcuts');
