@@ -24,5 +24,9 @@ export default {
     'OPEN': 'enter',
     'CLOSE': 'esc',
   },
-  'NON-EXISTING': {},
-}
+  'PARENT': {
+    'OPEN': 'enter',
+    'NEXT': 'tab',
+  },
+  'NO-SHORTCUTS': {},
+};
