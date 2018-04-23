@@ -1,5 +1,4 @@
 import React from 'react'
-import invariant from 'invariant'
 import Combokeys from 'combokeys'
 import PropTypes from 'prop-types'
 
@@ -56,6 +55,8 @@ export default class extends React.Component {
 
     if (this.props.global) {
       const element = this._getElementToBind()
+      if (!element) { return }
+
       element.removeEventListener(
         'shortcuts:global',
         this._customGlobalHandler
@@ -70,6 +71,8 @@ export default class extends React.Component {
 
   _bindShortcuts = (shortcutsArr) => {
     const element = this._getElementToBind()
+    if (!element) { return }
+
     element.setAttribute('tabindex', this.props.tabIndex || -1)
     this._combokeys = new Combokeys(element)
     this._decorateCombokeys()
@@ -99,6 +102,8 @@ export default class extends React.Component {
 
   _decorateCombokeys = () => {
     const element = this._getElementToBind()
+    if (!element) { return }
+
     const originalHandleKey = this._combokeys.handleKey.bind(this._combokeys)
 
     // NOTE: stopCallback is a method that is called to see
@@ -179,10 +184,6 @@ export default class extends React.Component {
     let element = null
     if (this.props.targetNodeSelector) {
       element = document.querySelector(this.props.targetNodeSelector)
-      invariant(
-        element,
-        `Node selector '${this.props.targetNodeSelector}'  was not found.`
-      )
     } else {
       element = this._domNode
     }
