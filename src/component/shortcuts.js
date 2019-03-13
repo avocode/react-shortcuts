@@ -71,7 +71,7 @@ export default class extends React.Component {
   _bindShortcuts = (shortcutsArr) => {
     const element = this._getElementToBind()
     element.setAttribute('tabindex', this.props.tabIndex)
-    this._combokeys = new Combokeys(element)
+    this._combokeys = new Combokeys(element, { storeInstancesGlobally: false })
     this._decorateCombokeys()
     this._combokeys.bind(
       shortcutsArr,

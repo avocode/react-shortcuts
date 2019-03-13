@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 let { Shortcuts } = require('../src')
 
 Shortcuts = React.createFactory(Shortcuts)
-const { div, h1, p } = React.DOM
+const { button, div, h1, p } = React.DOM
 
 export default React.createClass({
   displayName: 'App',
@@ -13,7 +13,7 @@ export default React.createClass({
   },
 
   getInitialState() {
-    return { who: 'Nobody' }
+    return { show: true, who: 'Nobody' }
   },
 
   getChildContext() {
@@ -42,12 +42,25 @@ export default React.createClass({
     this.setState({ who: 'Root shortcuts component' })
   },
 
+  _rebind() {
+    this.setState({ show: false })
+
+    setTimeout(() => {
+      this.setState({ show: true })
+    }, 100)
+  },
+
   render() {
+    if (!this.state.show) {
+      return null
+    }
+
     return (
 
       div({ className: 'root' },
 
         h1({ className: 'who' }, this.state.who),
+        button({ className: 'rebind', onClick: this._rebind }, 'Rebind listeners'),
 
         Shortcuts({
           name: this.constructor.displayName,
