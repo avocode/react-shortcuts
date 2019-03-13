@@ -92,6 +92,13 @@ describe('Shortcuts component', () => {
     expect(wrapper.props().isolate).to.be.equal(false)
   })
 
+  it('should NOT store combokeys instances on Combokeys constructor', () => {
+    const shortcutComponent = React.createElement(Shortcuts, baseProps)
+    const wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
+
+    expect(wrapper.find('Shortcuts').node._combokeys.constructor.instances).to.be.empty
+  })
+
   it('should have isolate prop', () => {
     const props = _.assign({}, baseProps, { isolate: true })
     const shortcutComponent = React.createElement(Shortcuts, props)
