@@ -74,7 +74,7 @@ export default class extends React.Component {
     if (!element) { return }
 
     element.setAttribute('tabindex', this.props.tabIndex || -1)
-    this._combokeys = new Combokeys(element)
+    this._combokeys = new Combokeys(element, { storeInstancesGlobally: false })
     this._decorateCombokeys()
     this._combokeys.bind(
       shortcutsArr,
