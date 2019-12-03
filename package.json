@@ -31,8 +31,8 @@
     "prop-types": "^15.5.8"
   },
   "peerDependencies": {
-    "react": "^0.14.8 || ^15",
-    "react-dom": "^0.14.8 || ^15"
+    "react": "^0.14.8 || ^15 || ^16",
+    "react-dom": "^0.14.8 || ^15 || ^16"
   },
   "repository": {
     "type": "git",
