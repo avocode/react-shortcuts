@@ -1,10 +1,14 @@
+import ReactDOMFactories from 'react-dom-factories'
 import jsdom from 'jsdom'
 import chai from 'chai'
 import sinonChai from 'sinon-chai'
 import sinon from 'sinon'
 import _ from 'lodash'
-
+import enzyme from 'enzyme'
+import Adapter from 'enzyme-adapter-react-16'
 import keymap from './keymap'
+
+enzyme.configure({ adapter: new Adapter() })
 
 describe('Shortcuts component', () => {
   let baseProps = null
@@ -15,7 +19,6 @@ describe('Shortcuts component', () => {
   let Shortcuts = null
   let ReactDOM = null
   let React = null
-  let enzyme = null
 
   chai.use(sinonChai)
   const { expect } = chai
@@ -29,7 +32,6 @@ describe('Shortcuts component', () => {
     simulant = require('simulant')
     ReactDOM = require('react-dom')
     React = require('react')
-    enzyme = require('enzyme')
     const chaiEnzyme = require('chai-enzyme')
 
     chai.use(chaiEnzyme())
@@ -60,7 +62,7 @@ describe('Shortcuts component', () => {
 
     expect(wrapper.props().tabIndex).to.be.equal(-1)
 
-    let props = _.assign({}, baseProps, { tabIndex: 42 })
+    const props = _.assign({}, baseProps, { tabIndex: 42 })
     shortcutComponent = React.createElement(Shortcuts, props)
     wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
 
@@ -104,7 +106,7 @@ describe('Shortcuts component', () => {
     const shortcutComponent = React.createElement(Shortcuts, baseProps)
     const wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
 
-    expect(wrapper.find('Shortcuts').node._combokeys.constructor.instances).to.be.empty
+    expect(wrapper.find('Shortcuts').instance()._combokeys.constructor.instances).to.be.empty
   })
 
   it('should have isolate prop', () => {
@@ -123,11 +125,11 @@ describe('Shortcuts component', () => {
   })
 
   it('should have children', () => {
-    const props = _.assign({}, baseProps, { children: React.DOM.div() })
+    const props = _.assign({}, baseProps, { children: ReactDOMFactories.div() })
     const shortcutComponent = React.createElement(Shortcuts, props)
     const wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
 
-    expect(wrapper).to.contain(React.DOM.div())
+    expect(wrapper).to.contain(ReactDOMFactories.div())
   })
 
   it('should have handler prop', () => {
@@ -268,7 +270,8 @@ describe('Shortcuts component', () => {
   })
 
   it('should not fire when the component has been unmounted', () => {
-    const shortcutComponent = React.createElement(Shortcuts, baseProps)
+    const handler = sinon.spy()
+    const shortcutComponent = React.createElement(Shortcuts, { ...baseProps, handler })
     const wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
 
     const node = ReactDOM.findDOMNode(wrapper.instance())
@@ -279,7 +282,7 @@ describe('Shortcuts component', () => {
     const enter = 13
     simulant.fire(node, 'keydown', { keyCode: enter })
 
-    expect(wrapper.props().handler).to.not.have.been.called
+    expect(handler).to.not.have.been.called
   })
 
   it.skip('should update the shortcuts and fire the handler', () => {
@@ -312,7 +315,7 @@ describe('Shortcuts component', () => {
 
   it('should fire the handler from a child input', () => {
     const props = _.assign({}, baseProps, {
-      children: React.DOM.input({ type: 'text', className: 'input' }),
+      children: ReactDOMFactories.input({ type: 'text', className: 'input' }),
     })
     const shortcutComponent = React.createElement(Shortcuts, props)
     const wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
@@ -352,7 +355,7 @@ describe('Shortcuts component', () => {
   it('should fire the handler from focused input', () => {
     const props = _.assign({}, baseProps, {
       alwaysFireHandler: true,
-      children: React.DOM.input({ type: 'text', className: 'input' }),
+      children: ReactDOMFactories.input({ type: 'text', className: 'input' }),
     })
     const shortcutComponent = React.createElement(Shortcuts, props)
     const wrapper = enzyme.mount(shortcutComponent, { context: baseContext })
