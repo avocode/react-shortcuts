@@ -60,7 +60,7 @@
     "css-loader": "^0.15.6",
     "enzyme": "^3.0.0",
     "enzyme-adapter-react-16": "^1.15.1",
-    "eslint": "^3.10.2",
+    "eslint": "^4.18.2",
     "eslint-config-airbnb": "^13.0.0",
     "eslint-import-resolver-webpack": "^0.7.0",
     "eslint-plugin-import": "^2.2.0",
