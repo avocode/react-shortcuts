@@ -1,11 +1,14 @@
+import React from 'react'
 import PropTypes from 'prop-types'
+import createClass from 'create-react-class'
+import ReactDOMFactories from 'react-dom-factories'
 
 let { Shortcuts } = require('../src')
 
 Shortcuts = React.createFactory(Shortcuts)
-const { button, div, h1, p } = React.DOM
+const { button, div, h1, p } = ReactDOMFactories
 
-export default React.createClass({
+export default createClass({
   displayName: 'App',
 
   childContextTypes: {
